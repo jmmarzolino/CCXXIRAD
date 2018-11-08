@@ -41,10 +41,10 @@ SHORT=$(basename "$FILE" | cut -d. -f1 | cut -d_ -f1-2)
 # BWA Alignment into raw sorted alignment
 # then sam to sorted bam
 #bwa mem ref.fa reads.fq > aln-se.sam
-bwa mem -t 8 $INDEX $WORKINGDIR/"$NAME".fq > $RESULTSDIR/"$SHORT".sam
-
 #add read groups
+-R STR	read group header line. ’\t’ = TAB. read group ID is attached to every read. example: ’@RG\tID:foo\tSM:bar’
 
+bwa mem -R "@RG:\tID:$SLURM_ARRAY_TASK_ID\tSM:$SAMPLE\tPU:$LANE\tLB:$GROUP" -t 8 $INDEX $WORKINGDIR/"$NAME".fq > $RESULTSDIR/"$SHORT".sam
 
 # mapping stats
 samtools flagstat $RESULTSDIR/"$SHORT".sam > $RESULTSDIR/mappingstats/"$SHORT"_mapstats.txt

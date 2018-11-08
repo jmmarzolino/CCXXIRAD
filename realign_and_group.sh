@@ -60,18 +60,21 @@ fi
 
 ##RGLB (String)	Read Group library Required.
 #RGLB=<"24=F25=late, 267=F11=early">
-X=`cut "$NAME" --delimiter=_ -f1`
+X=$(basename "$FILE" | cut -d. -f1 | cut -d_ -f1)
+Y=24
 
-if ["$X"=="24"]; then
-  RGLB="F25"
+if [ "$X" == "$Y" ]; then
+  RGLB=F25
 else
-  RGLB="F11"
+  RGLB=F11
 fi
 
 
 ##RGPL (String)	Read Group platform (e.g. illumina, solid) Required.
 #RGPL=illumina
-java -jar /opt/linux/centos/7.x/x86_64/pkgs/trimmomatic/0.36/trimmomatic.jar \
+##find picard path with 'echo $PICARD' or 'module load picard; echo $PATH' or somesuch
+#use bwa for read group assignment next time at same step as alignment
+java -jar /opt/linux/centos/7.x/x86_64/pkgs/picard/2.18.3/lib/picard.jar \
 AddOrReplaceReadGroups \
       I=$RESULTSDIR/"$NAME".sam \
       O=$RESULTSDIR/"$NAME".bam \
