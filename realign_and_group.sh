@@ -60,9 +60,9 @@ fi
 
 ##RGLB (String)	Read Group library Required.
 #RGLB=<"24=F25=late, 267=F11=early">
-X=`cut $NAME --delimiter=_ -f1`
+X=`cut "$NAME" --delimiter=_ -f1`
 
-if ["$X"="24"]; then
+if ["$X"=="24"]; then
   RGLB="F25"
 else
   RGLB="F11"
