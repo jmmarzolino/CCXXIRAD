@@ -1,28 +1,25 @@
 #!/bin/bash -l
 
-#SBATCH --output=/rhome/jmarz001/bigdata/CCXXIRAD/Scripts/retained.stdout
+#SBATCH --output=/rhome/jmarz001/bigdata/CCXXIRAD/Scripts/mapped.stdout
 #SBATCH --mail-user=jmarz001@ucr.edu
 #SBATCH --mail-type=ALL
-#SBATCH --job-name='retained'
+#SBATCH --job-name='mapped'
 
 #SBATCH --ntasks=1
 #SBATCH --mem-per-cpu=10G
 
 #SBATCH --time=1:00:00
-#SBATCH -p intel
+#SBATCH -p koeniglab
 
 
 DIR=/rhome/jmarz001/bigdata/CCXXIRAD/raw_aligns/mappingstats
 cd $DIR
 
-for file in $DIR; do
-  "$file" >> cat_map.txt
-  grep "total" | cut --delimiter=\s -f1,5  >> cat_map.txt
-  grep "mapped" | cut --delimiter=\s -f1,4 >> cat_map.txt
-done
+printf "ID \t Total Reads \t Mapped Reads \t Percent Mapped \n" > $DIR/mapped
+map_list=`ls *.txt`
 
-#4272567 + 0 in total (QC-passed reads + QC-failed reads)
-#0 + 0 secondary
-#47239 + 0 supplementary
-#0 + 0 duplicates
-#4249916 + 0 mapped (99.47% : N/A)
+for line in $map_list; do
+  B=`grep "total" $line | cut --delimiter=\  -f1`
+  C=`grep "mapped (" $line | cut --delimiter=\  -f1`
+  printf "$line \t $B \t $C \n" >> $DIR/mapped
+done

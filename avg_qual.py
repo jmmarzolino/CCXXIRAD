@@ -1,11 +1,8 @@
 #!/usr/bin/env python
+#SBATCH --output=/rhome/jmarz001/bigdata/CCXXIRAD/Scripts/qual.stdout
+#SBATCH -p koeniglab
 
-"""
-Compute the average quality for a given FASTQ file.
-
-You can use this script from the shell like this:
-$ fastq_avg_qual < reads.fastq
-"""
+#Compute the average quality for a given FASTQ file.
 
 # Iterative mean #
 def imean(numbers):

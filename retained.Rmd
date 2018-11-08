@@ -1,0 +1,63 @@
+---
+title: "Retained"
+author: "Jill Marzolino"
+date: "11/2/2018"
+output: pdf_document
+---
+
+```{r generate data frame}
+pre_fileseqs <- read.delim("/bigdata/koeniglab/jmarz001/CCXXIRAD/barcode/quality/pre_fileseqs.txt")
+View(pre_fileseqs)
+post_fileseqs <- read.delim("/bigdata/koeniglab/jmarz001/CCXXIRAD/trim/fastqc/post_fileseqs.txt")
+View(post_fileseqs)
+RAD_results <- read.delim("/bigdata/koeniglab/jmarz001/CCXXIRAD/barcode/results/RAD_results", header=FALSE, comment.char="#")
+View(RAD_results)
+
+retained_results <- data.frame(pre_fileseqs$Filename, pre_fileseqs$Total.Sequences, post_fileseqs$Total.Sequences)
+column_names <- c(ID, Pre.Trim.Reads, Post.Trim.Reads)
+colnames(retained_results) <- column_names
+
+retained_results$Barcode.Percent <- 99
+retained_results$Trim.Percent <- (pre_fileseqs$Post.Trim.Reads / post_fileseqs$Pre.Trim.Reads)*100
+```
+
+
+```{r find graph ranges}
+prerange <- c( min(pre_fileseqs$Post.Trim.Reads), max(pre_fileseqs$Post.Trim.Reads))
+postrange <- c( min(post_fileseqs$Pre.Trim.Reads) , max(post_fileseqs$Pre.Trim.Reads))
+filterrange <- c( min(retained_results$Trim.Percent), max(retained_results$Trim.Percent))
+```
+
+
+```{r generate graphs}
+# Histogram
+stairs <- hist(retained_results$Trim.Percent, breaks=10, col="orchid")
+
+# Filled Density Plot
+curve <- density(retained_results$Trim.Percent)
+plot(curve, main="Kernel Density of Retained Reads", sub="After Trim", xlim=filterrange)
+
+# package??
+polygon(curve, col="orchid3", border="blue")
+```
+
+
+```{r tweak graphs}
+# Compare MPG distributions for cars with
+# 4,6, or 8 cylinders
+pre.and.post <- data.frame(pre_fileseqs$Pre.Trim.Reads, post_fileseqs$Post.Trim.Reads)
+library(sm)
+attach(pre.and.post)
+
+# create value labels
+filter.f <- factor(filter, levels= c(1,2),
+  labels = c("pre-trim", "post-trim"))
+
+# plot densities
+sm.density.compare(pre.and.post, filter, xlab="No. Reads Retained")
+title(main="Reads Retained Before and After Trim")
+
+# add legend via mouse click
+colfill<-c(2:(2+length(levels(filter.f))))
+legend(locator(1), levels(filter.f), fill=colfill)
+```
