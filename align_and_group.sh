@@ -38,33 +38,16 @@ SHORT=$(basename "$FILE" | cut -d. -f1 | cut -d_ -f1-2)
 # then sam to sorted bam
 #bwa mem ref.fa reads.fq > aln-se.sam
 #add read groups
+
 ##RGPU (String)	Read Group platform unit (eg. run barcode) Required.
 #define the ID# list based on which lane they're from
-#cut so only the second column is used (ID name not barcode string)
-A=/rhome/jmarz001/bigdata/CCXXIRAD/barcode/BARCODE_FILES/HvRADA2_barcodes.txt
-P=/rhome/jmarz001/bigdata/CCXXIRAD/barcode/BARCODE_FILES/HvRADP3_barcodes.txt
-Y=/rhome/jmarz001/bigdata/CCXXIRAD/barcode/BARCODE_FILES/HvRADY3_barcodes.txt
-O=/rhome/jmarz001/bigdata/CCXXIRAD/barcode/BARCODE_FILES/HvRADO2_barcodes.txt
-#look for the file name in the Avocado barcode file
-#if the name matches in the file, then say that it's read group is A
-#Avocado
-EVAL=`grep "$SHORT" "$A" | cut -f2`
-if [ "$EVAL" == "$SHORT" ]; then
-  RGPU=Avocado
-fi
-#Pink
-EVAL=`grep "$SHORT" "$P" | cut -f2`
-if [ "$EVAL" == "$SHORT" ]; then
-  RGPU=Pink
-fi
-#Yellow or Orange
-EVAL=`grep "$SHORT" "$Y" | cut -f2`
-if [ "$EVAL" == "$SHORT" ]; then
-  RGPU=Yellow
-else
-  RGPU=Orange
-fi
+BAR=/rhome/jmarz001/bigdata/CCXXIRAD/barcode/BARCODE_FILES/
+#file with info containing file name/ID in one column and plate on another (from group_test.sh script which copied lines from Hv## barcode files into new 'plates' file with addition of plate info column based on which barcode file they came from)
+PLATES=$BAR/plates
 
+RGPU=`grep "$SHORT" $PLATES | cut -f4`
+
+#cut so only the second column is used (ID name not barcode string)
 
 ##RGLB (String)	Read Group library Required.
 #RGLB=<"24=F25=late, 267=F11=early">
