@@ -9,7 +9,7 @@
 
 WORKINGDIR=/rhome/jmarz001/bigdata/CCXXIRAD/raw_aligns
 RESULTSDIR=/rhome/jmarz001/bigdata/CCXXIRAD/calls
-REFERENCE=/rhome/jmarz001/bigdata/Practice/Hordeum_vulgare.Hv_IBSC_PGSB_v2.dna.toplevel/Hordeum_vulgare.Hv_IBSC_PGSB_v2.dna.toplevel
+REFERENCE=/rhome/jmarz001/bigdata/H_Murinum/Practice_Set/Hordeum_vulgare.Hv_IBSC_PGSB_v2.dna.toplevel/Hordeum_vulgare.Hv_IBSC_PGSB_v2.dna.toplevel
 SEQLIST=$WORKINGDIR/bams
 
 FILE=$(head -n $SLURM_ARRAY_TASK_ID $SEQLIST | tail -n 1)
