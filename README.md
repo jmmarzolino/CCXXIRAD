@@ -39,6 +39,14 @@ done
   
 split by barcodes   
   (barcode_splitter.sh)  
+  
+  
+  (radtag_parser.py)
+#After successfully running radtag_parser.py on the A, P, Y, O logs, I had to manually remove two text lines from the top of the A and P _results outfiles
+# then I saved those, ported them into R
+# in R I put together an Rmd script which should include all the changes from that point including the sorting by ID/file name, removing the file name clasues..etc
+
+  
 align  
   (align.sh)  
   
