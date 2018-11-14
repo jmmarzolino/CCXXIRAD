@@ -1,7 +1,9 @@
 #!/bin/bash -l
 
 #SBATCH --ntasks=15
-#SBATCH --time=72:00:00
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=5G
+#SBATCH --time=5:00:00
 #SBATCH --output=/rhome/jmarz001/bigdata/CCXXIRAD/Scripts/bam-index.stdout
 #SBATCH --job-name='index'
 #SBATCH -p koeniglab
