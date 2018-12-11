@@ -1,0 +1,21 @@
+FASTQ Location
+/rhome/jmarz001/shared/SEQ_RUNS/10_17_2018/FASTQ
+
+File Names
+Jill-1_S3_R1_001.fastq.gz
+Jill-2_S4_R1_001.fastq.gz
+
+Reads/Line sets in each file
+grep -c "@"  Jill-1_S3_R1_001.fastq
+grep -c "@"  Jill-1_S3_R1_001.fastq
+
+
+WORKINGDIR=/rhome/jmarz001/bigdata/convergent_evolution/scripts
+
+gunzip /rhome/jmarz001/shared/SEQ_RUNS/10_17_2018/FASTQ/*
+
+fastqc.sh
+WORKINGDIR=/rhome/jmarz001/shared/SEQ_RUNS/10_17_2018/FASTQ/
+
+division.sh
+
