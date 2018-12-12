@@ -25,23 +25,28 @@ check quality of downloaded FASTQs
 split by barcodes   
   (barcode_splitter.sh)  
   
-  (radtag_parser.py)
+  (RAD_parser.py)
 After successfully running radtag_parser.py on the A, P, Y, O logs, I had to manually remove two text lines from the top of the A and P _results outfiles  
 then I saved those, imported to R  
 wrote an Rmd script which sort by ID/file name, remove the file name clasues, etc  
+  
+  (trim.sh)
   
 align to reference and assign read groups based on ID, population, and growth position  
   (align_and_group.sh)  
  
 (bam_index.sh)
 (csi_lengths.sh)
+
+(freebayes_snp.sh)
+(snp_caller.sh)
+
 (filter.sh)
 (filter_stats.sh)
 (filter2.sh)
 (qual_filter.sh)
-(freebayes_snp.sh)
-(RAD_parser.py)
-(snp_caller.sh)
+
+
 (snp_dist.sh)
 (snp_dist2.sh)
-(trim.sh)
+
