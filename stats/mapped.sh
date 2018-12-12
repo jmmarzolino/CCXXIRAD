@@ -1,18 +1,14 @@
 #!/bin/bash -l
 
 #SBATCH --output=/rhome/jmarz001/bigdata/CCXXIRAD/Scripts/mapped.stdout
-#SBATCH --mail-user=jmarz001@ucr.edu
-#SBATCH --mail-type=ALL
 #SBATCH --job-name='mapped'
-
 #SBATCH --ntasks=1
 #SBATCH --mem-per-cpu=10G
-
 #SBATCH --time=1:00:00
 #SBATCH -p koeniglab
 
 
-DIR=/rhome/jmarz001/bigdata/CCXXIRAD/raw_aligns/mappingstats
+DIR=/rhome/jmarz001/bigdata/CCXXIRAD/align/mappingstats
 cd $DIR
 
 printf "ID \t Total Reads \t Mapped Reads \t Percent Mapped \n" > $DIR/mapped
