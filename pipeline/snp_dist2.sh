@@ -20,3 +20,4 @@ FILE=$(head -n $SLURM_ARRAY_TASK_ID $SEQS | tail -n 1)
 RESULT=/rhome/jmarz001/bigdata/CCXXIRAD/calls/dist/
 
 grep "^chr" $FILE | cut -f6 > $RESULT/quality
+
