@@ -25,7 +25,7 @@ upload plate barcode and ID files
 #### fastq_qc.sh  
 check quality of downloaded FASTQs  
    
-   
+----   
 ### Pipeline   
 #### barcode_splitter.sh  
 split by barcodes with STACKS; requires input prepared earlier (restriction enzyme, plate barcodes, plate location and plant ID)   
@@ -33,37 +33,48 @@ split by barcodes with STACKS; requires input prepared earlier (restriction enzy
 #### bar_qc.sh   
 generate quality files for barcode split files  
   
-  
+----     
 ### Quality
 #### RAD_parser.py  
 After successfully running radtag_parser.py on the A, P, Y, O logs, I had to manually remove two text lines from the top of the A and P _results outfiles  
 then I saved those, imported to R  
 wrote an Rmd script which sort by ID/file name, remove the file name clasues, etc  
   
-  
-### Pipeline 
+----   
+
+
+### Pipeline  
 #### trim.sh  
   
 #### trim_qc.sh  
   
 #### trim_fastqc.sh  
   
-  
+----   
+
+
 #### align_and_group.sh  
 align to reference and assign read groups based on ID, population, and growth position  
   
-  
+### Pipeline    
 #### bam_index.sh  
+### Quality    
 #### csi_lengths.sh  
   
+----  
+
 #### freebayes_snp.sh  
 #### snp_caller.sh  
   
+----   
+### Pipeline  
 #### filter.sh  
-#### filter_stats.sh  
 #### filter2.sh  
+
+### Quality 
+ 
 #### qual_filter.sh  
-  
+#### filter_stats.sh   
   
 #### snp_dist.sh
 #### snp_dist2.sh
