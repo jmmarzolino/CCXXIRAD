@@ -58,26 +58,34 @@ align to reference and assign read groups based on ID, population, and growth po
   
 ### Pipeline    
 #### bam_index.sh  
+create indexes for the bam files, for the length of the barley genome, these need to be .csi not .bai (which has a length restriction and will cut your genome prematurely)  
 ### Quality    
-#### csi_lengths.sh  
-  
-----  
+#### csi_lengths.sh   
+check the length of the .csi files to see how many reads there are
 
+----  
+### Pipeline
 #### freebayes_snp.sh  
+call snps with freebayes software
+-k for populations not in Hardy-Weinberg equilibrium
+provide freebayes with a list of .bam files so that all individual plant reads will be used together to call snps: this can improve the accuracy and quality of snp calling and filtering because freebayes can factor in every read per site 
 #### snp_caller.sh  
   
 ----   
 ### Pipeline  
 #### filter.sh  
-#### filter2.sh  
-
-### Quality 
- 
+first round of filtering, excludes low quality and high missing data  
 #### qual_filter.sh  
+filter based on quality; need to determine which is the right first filter...   
+
+
+#### filter2.sh  
+second round of filtering, excludes....
+
+### Quality
 #### filter_stats.sh   
-  
-#### snp_dist.sh
-#### snp_dist2.sh
+#### snp_dist.sh  
+#### snp_dist2.sh  
   
   
 # Extra
