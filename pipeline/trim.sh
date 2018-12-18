@@ -47,6 +47,7 @@ LEADING:5 TRAILING:5 SLIDINGWINDOW:4:20 MINLEN:36
 #SLIDINGWINDOW:<windowSize>:<requiredQuality>
 #windowSize: specifies the number of bases to average across
 #requiredQuality: specifies the average quality required.
+#typical examples use a 4-base wide window, cutting when average quality drops below 15
 
 #LEADING:<quality>
 #quality: Specifies the minimum quality required to keep a base.
