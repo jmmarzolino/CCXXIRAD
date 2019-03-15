@@ -1,13 +1,18 @@
 #!/usr/bin/env python
 
-#SBATCH -p intel
-#SBATCH --ntasks=1
-#SBATCH --mem-per-cpu=10G
-#SBATCH --time=1:00:00
-#SBATCH --output=/rhome/jmarz001/bigdata/CCXXIRAD/barcode/results/A_results
-#SBATCH --job-name='radtag_parser'
+#SBATCH -p koeniglab
+#SBATCH --ntasks=15
+#SBATCH --mem=150G
+#SBATCH --time=72:00:00
+#SBATCH --output=/rhome/jmarz001/bigdata/CCXXIRAD/Scripts/qual_filter.stdout
+#SBATCH --job-name='filter'
+#SBATCH --array=1-384
 
-#Read in each line of the example file, split it into separate components, and write certain output to another file
+RESULTSDIR=/rhome/jmarz001/bigdata/CCXXIRAD/calls/filtered
+SEQLIST=$WORKINGDIR/files
+FILE=$(head -n $SLURM_ARRAY_TASK_ID $SEQLIST | tail -n 1)
+NAME=$(basename "$FILE" | cut -d. -f1)
+
 
 #initialize line number counter
 LineNumber = 0
@@ -37,7 +42,3 @@ for Line in InFile:
         print OutputString+"\n"
     LineNumber = LineNumber + 1
 InFile.close()
-
-#if Line.split() == "":
-#   break
-#python assumed everything is a string
