@@ -43,8 +43,6 @@ polygon(curve, col="orchid3", border="blue")
 
 
 ```{r tweak graphs}
-# Compare MPG distributions for cars with
-# 4,6, or 8 cylinders
 pre.and.post <- data.frame(pre_fileseqs$Pre.Trim.Reads, post_fileseqs$Post.Trim.Reads)
 library(sm)
 attach(pre.and.post)
