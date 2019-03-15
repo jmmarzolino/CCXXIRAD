@@ -1,0 +1,24 @@
+
+# first convert vcf file to plink format file
+
+
+
+module load plink/1.90b3.38(default)
+plink --id-delim _  --chr-set 12 --vcf CCXXIRAD.ref_alt_ratio.vcf --recode --out ../../results/myplink
+
+
+# loads a (possibly gzipped) vcf file
+--vcf <filename>
+
+# By default, when the GT field is absent, the variant is kept and all genotypes are set to missing. To skip the variant instead, use --vcf-require-gt.
+
+--pca [count] ['header'] ['tabs'] ['var-wts']
+
+>.eigenval
+>.eigenvec
+
+--out <prefix>
+
+plink --vcf myvcf.vcf.gz --recode --out myplink
+
+--id-delim causes sample IDs to be parsed as <FID><delimiter><IID>; the default delimiter is '_'. If any sample ID does not contain exactly one instance of the delimiter, an error is normally reported; however, if you have simultaneously specified --double-id or --const-fid, PLINK will fall back on that approach to handle zero-delimiter IDs.
