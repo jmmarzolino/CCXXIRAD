@@ -1,22 +1,34 @@
 #!/bin/bash -l
 
-#SBATCH --ntasks=20
-#SBATCH --time=168:00:00
-#SBATCH --mem=200G
-#SBATCH --output=/rhome/jmarz001/bigdata/CCXXIRAD/Scripts/split_snps.stdout
-#SBATCH --job-name='split_chrs'
+#SBATCH --nodes=1
+#SBATCH --ntasks=10
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=10G
+#SBATCH --time=72:00:00
+#SBATCH --output=/rhome/jmarz001/bigdata/CCXXIRAD/Scripts/calls.stdout
+#SBATCH --mail-user=jmarz001@ucr.edu
+#SBATCH --mail-type=ALL
+#SBATCH --job-name='rad_snp_calls'
 #SBATCH -p koeniglab
-#SBATCH --array=1-16
+#SBATCH --array=1-384
 
-WORK=/rhome/jmarz001/bigdata/CCXXIRAD/align
-cd $WORK
-RESULT=/rhome/jmarz001/bigdata/CCXXIRAD/calls
-REF=/rhome/jmarz001/shared/GENOMES/NEW_BARLEY/GENOME_SPLIT/barley_split_reference.fa
+#####                   Calling SNP's                    #####
+##samtools mpileup -uf ref.fa aln.bam | bcftools call -mv -Oz > calls.vcf.gz
+WORKINGDIR=/rhome/jmarz001/bigdata/Master/dupfree_aligns/barley_dupfree_aligned.bam
+RESULTSDIR=/rhome/jmarz001/bigdata/Master/calls/barley_calls.vcf.gz
+REFERENCE=/rhome/jmarz001/bigdata/Practice/Hordeum_vulgare.Hv_IBSC_PGSB_v2.dna.toplevel/Hordeum_vulgare.Hv_IBSC_PGSB_v2.dna.toplevel
 
-CHR=/rhome/jmarz001/bigdata/CCXXIRAD/calls/chr_splits.txt
-REGION=$(head -n $SLURM_ARRAY_TASK_ID $CHR | tail -n 1)
+module load samtools
+module load bcftools
 
-module load freebayes/1.2.0
+samtools mpileup -uf $REFERENCE $WORKINGDIR | bcftools call -mv -Oz > $RESULTSDIR
 
-#freebayes -f [reference] [infiles.bam] > [outfiles.vcf]
-freebayes -k -f $REF -r $REGION $WORK/*.bam > $RESULT/rad.$REGION.freebayes.snps.vcf
+######                  Filtering                       ######
+
+gunzip /rhome/jmarz001/bigdata/Master/calls/barley_calls.vcf.gz
+
+module load vcftools
+
+vcftools --vcf /rhome/jmarz001/bigdata/Master/calls/barley_calls.vcf \
+--minQ 30 --out /rhome/jmarz001/bigdata/Master/filtered/barley_rawsnpsQUAL30 --recode
+

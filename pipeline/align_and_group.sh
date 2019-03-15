@@ -7,7 +7,7 @@
 #SBATCH --time=168:00:00
 #SBATCH --output=/rhome/jmarz001/bigdata/CCXXIRAD/Scripts/align_and_group.stdout
 #SBATCH --job-name='align+group'
-#SBATCH -p koeniglab
+#SBATCH -p batch
 #SBATCH --array=1-384
 
 # BWA Alignment into raw sorted alignment
@@ -23,7 +23,7 @@ cd $WORKINGDIR
 ls *trimmed.fq >> filenames.txt
 SEQLIST=/rhome/jmarz001/bigdata/CCXXIRAD/trim/filenames.txt
 RESULTSDIR=/rhome/jmarz001/bigdata/CCXXIRAD/align
-INDEX=/rhome/jmarz001/bigdata/REF/Hordeum_vulgare.Hv_IBSC_PGSB_v2.dna.toplevel
+INDEX=/rhome/jmarz001/shared/GENOMES/NEW_BARLEY/GENOME_SPLIT/barley_split_reference.fa
 
 # Define files to run over
 # get filenames from list
