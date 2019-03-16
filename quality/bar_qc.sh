@@ -11,9 +11,7 @@
 #SBATCH --mail-type=ALL
 #SBATCH --job-name='rad_fastq'
 
-#load more modules than may be necessary but I'm unsure and it doesn't hurt
-module load picard
-module load fastqc/0.11.7
+module load picard fastqc/0.11.7
 
 ## Format for fastqc function: in files, out directory specification, number of threads (only use 6 on 32Gb machine and match with ntasks in header), -q (quiet) puts errors in stdout file not stdout and log (saves time and space)
 # <fastqc somefile.txt someotherfile.txt --outdir=/some/other/dir/ -t 6 -q>
