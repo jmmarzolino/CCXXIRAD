@@ -39,5 +39,3 @@ bcftools index --threads 3 --csi $FILE.gz
 
 # sample file must contain samples to subset by (ie. those included and not excluded)?
 bcftools view --threads 3 --samples-file $SAMP --force-samples -o $WORK/CCXXIRAD.inv_filt.vcf $FILE.gz
-
-

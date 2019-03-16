@@ -30,19 +30,8 @@ ls *.lmiss > $SEQS
 FILE=$(head -n $SLURM_ARRAY_TASK_ID $SEQS | tail -n 1)
 NAME=$(basename "$FILE" | cut -d. -f1-2)
 # search the list for sites with 100% and 99.9% data missing, see if that would topple the data
-awk '$5 > 0.999' $NAME.lmiss | cut -f1-2 >> $NAME.outbred.site
-awk '$5 > 0.99' $NAME.lmiss | cut -f1-2 >> $NAME.het.site
+awk '$5 > 0.999' $NAME.lmiss | cut -f1-2 >> $NAME.high.missing.loci.site
+awk '$5 > 0.99' $NAME.lmiss | cut -f1-2 >> $NAME.low.missing.loci.site
 
-find . -type f -name '*.outbred.site' -exec cat {} + >> outbred.sites
-find . -type f -name '*.het.site' -exec cat {} + >> het.sites
-
-HETS=$WORK/hets
-ls *.het > $HETS
-
-FILE=$(head -n $SLURM_ARRAY_TASK_ID $HETS | tail -n 1)
-NAME=$(basename "$FILE" | cut -d. -f1-2)
-awk '$5 < 0' $NAME.het | cut -f1 >> $NAME.outbred.indv
-awk '$5 < 0.1' $NAME.het | cut -f1 >> $NAME.het.indv
-  # in the fifth column, look for values less than 0 (-F stats, not inbred), and pass the row to cut, take the first value of the row (file name) and store it in this file
-find . -type f -name '*.het.indv' -exec cat {} + >> high.hets
-find . -type f -name '*.outbred.indv' -exec cat {} + >> outbred
+find . -type f -name '*.high.missing.loci.site' -exec cat {} + >> high.missing.loci.sites
+find . -type f -name '*.low.missing.loci.site' -exec cat {} + >> low.missing.loci.site
