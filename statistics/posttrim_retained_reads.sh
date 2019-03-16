@@ -4,10 +4,8 @@
 #SBATCH --mail-user=jmarz001@ucr.edu
 #SBATCH --mail-type=ALL
 #SBATCH --job-name='retained'
-
 #SBATCH --ntasks=1
 #SBATCH --mem-per-cpu=10G
-
 #SBATCH --time=1:00:00
 #SBATCH -p intel
 
