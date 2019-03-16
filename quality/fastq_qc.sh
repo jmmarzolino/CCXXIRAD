@@ -7,12 +7,8 @@
 #SBATCH --mem-per-cpu=20G
 #SBATCH --time=10:00:00
 #SBATCH --output=/rhome/jmarz001/bigdata/CCXXIRAD/Scripts/fastq_fastqc.stdout
-#SBATCH --mail-user=jmarz001@ucr.edu
-#SBATCH --mail-type=ALL
 #SBATCH --job-name='fastq_fastqc'
 
-#load more modules than may be necessary but I'm unsure and it doesn't hurt
-module load picard
 module load fastqc/0.11.7
 
 # Single FASTQ FASTQC, before demultiplex
