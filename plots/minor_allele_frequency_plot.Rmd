@@ -1,0 +1,22 @@
+# convert all non-MAF's into true MAF's
+F25_MAF[F25_MAF$V1 > 0.5, "V1"] <- 1 - (F25_MAF[F25_MAF$V1 > 0.5, "V1"] )
+F11_MAF[F11_MAF$V1 > 0.5, "V1"] <- 1 - (F11_MAF[F11_MAF$V1 > 0.5, "V1"] )
+minor_allele_freq[minor_allele_freq$MAF > 0.5, "MAF"] <- 1 - (minor_allele_freq[minor_allele_freq$MAF > 0.5, "MAF"] )
+# set up break points for frequency bars
+br = seq(0,0.5,by=0.1)
+ranges = paste(head(br,-1), br[-1], sep=" - ")
+
+freq25 = hist(F25_MAF$V1, breaks=br, include.lowest=TRUE, plot=FALSE)
+freq11 = hist(F11_MAF$V1, breaks=br, include.lowest=TRUE, plot=FALSE)
+both_pops = hist(minor_allele_freq$MAF, breaks=br, include.lowest=TRUE, plot=FALSE)
+
+F11_freq_counts = data.frame(range = ranges, frequency = freq11$counts)
+F25_freq_counts = data.frame(range = ranges, frequency = freq25$counts)
+both_freq_counts = data.frame(range = ranges, frequency = both_pops$counts)
+
+# time to graph all 3 frequencies on a ggplot bar graph
+ggplot(minor_allele_freq, aes(MAF.Percent)) + geom_histogram(bins = 200, fill="pink") + theme(axis.text=element_text(size=12), axis.title=element_text(size=14,face="bold")) + xlab("MAF") + theme_classic()
+
+# the easy way to do the site frequency spectrum plots
+barplot(table(cut(F11_MAF[,1],seq(0,.5,.05))))
+# bins need to be by 5% not 10%

@@ -16,7 +16,7 @@ pca_MAF_exclude_50LD$FID <- gsub("267", "F11", pca_MAF_exclude_50LD$FID)
 pca_MAF_exclude_10LD$FID <- gsub("24", "F25", pca_MAF_exclude_10LD$FID)
 pca_MAF_exclude_10LD$FID <- gsub("267", "F11", pca_MAF_exclude_10LD$FID)
 
-# this is code that generates a beautiful plot <3
+# this is code that generates a beautiful PCA <3
 ggplot(pca, aes(PC1, PC2)) + geom_point(aes(color = pca$FID)) + xlab("PC1 (8.036%)") + theme_minimal() + ylab("PC2 (7.045%)") + scale_color_manual("Generations", values=wes_palette("GrandBudapest1")) + theme(axis.text=element_text(size=12)), axis.title=element_text(size=14,face="bold")
 
 ## comparing LD == 50 vs. 10 as pca plots
@@ -28,7 +28,10 @@ ggplot(pca_MAF_exclude_10LD, aes(PC1, PC2)) + geom_point(aes(color=pca_MAF_exclu
 # PC1 and PC2 == 12.8531 & 10.5159
 #so I should use VIF==10 or lower
 # the smaller grouping to the right is made up of about 92 points, which, after filtering, represents about 1/4 of the samples sequenced
-
+pca_MAF_exclude_10LD$ID <- paste(pca_MAF_exclude_10LD$FID, pca_MAF_exclude_10LD$IID, sep="_")
+PCA_Plates <- PCA_Plates[,-c(4:7)]
+PCA_Plates2 <- merge(pca_MAF_exclude_10LD, PCA_Plates, sep="_")
+ggplot(PCA_Plates, aes(PC1, PC2)) + geom_point(aes(color=PCA_Plates$V1)) + theme_minimal() + scale_color_manual("Plate", values=wes_palette("GrandBudapest1", n=4)) + theme(axis.text=element_text(size=12), axis.title=element_text(size=14, face="bold"))
 
 # for first "pca" dataset
 ######################################

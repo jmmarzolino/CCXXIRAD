@@ -32,36 +32,16 @@ plink --aec --vcf CCXXIRAD.ref_alt_ratio.vcf --pca 20 'header' 'tabs' 'var-wts' 
 # how to generate the frequency data
 # --freq gz & --freqx gz
 plink --aec --freq gz --vcf CCXXIRAD.ref_alt_ratio.vcf --out ../../results/
+# then take the MAF column (cut -f5) from that per-site frequency file > minor_allele_freq
+
+# start working on doing this for the individual families (F11 and F25)
 plink --aec --id-delim _ --family --freq gz --vcf CCXXIRAD.ref_alt_ratio.vcf --out ../../results/F11
 plink --aec --id-delim _ --family --freq gz --vcf CCXXIRAD.ref_alt_ratio.vcf --out ../../results/F25
 zcat F11.frq.strat.gz | awk '$3 ~ /24/{print $6;}' > F25_MAF
 zcat F11.frq.strat.gz | awk '$3 ~ /267/{print $6;}' > F11_MAF
 # load files into R studio
-# convert all non-MAF's into true MAF's
-> F25_MAF[F25_MAF$V1 > 0.5, "V1"] <- 1 - (F25_MAF[F25_MAF$V1 > 0.5, "V1"] )
-> F11_MAF[F11_MAF$V1 > 0.5, "V1"] <- 1 - (F11_MAF[F11_MAF$V1 > 0.5, "V1"] )
-> minor_allele_freq[minor_allele_freq$MAF > 0.5, "MAF"] <- 1 - (minor_allele_freq[minor_allele_freq$MAF > 0.5, "MAF"] )
-# set up break points for frequency bars
-> br = seq(0,0.5,by=0.1)
-> ranges = paste(head(br,-1), br[-1], sep=" - ")
+######################################################################################################################################################
 
-freq25 = hist(F25_MAF$V1, breaks=br, include.lowest=TRUE, plot=FALSE)
-freq11 = hist(F11_MAF$V1, breaks=br, include.lowest=TRUE, plot=FALSE)
-both_pops = hist(minor_allele_freq$MAF, breaks=br, include.lowest=TRUE, plot=FALSE)
-
-F11_freq_counts = data.frame(range = ranges, frequency = freq11$counts)
-> F11_freq_counts
-F25_freq_counts = data.frame(range = ranges, frequency = freq25$counts)
-> F25_freq_counts
-both_freq_counts = data.frame(range = ranges, frequency = both_pops$counts)
-> both_freq_counts
-
-# then take the MAF column (cut -f5) from that per-site frequency file > minor_allele_freq
-# read into R, multiply by 100 to get percentages, and graph allele frequency spectrum as a bar graph
-minor_allele_freq <- read.csv("/bigdata/koeniglab/jmarz001/CCXXIRAD/results/minor_allele_freq", sep="")
-minor_allele_freq$MAF.Percent <- minor_allele_freq$MAF*100
-ggplot(minor_allele_freq, aes(MAF.Percent)) + geom_histogram(bins = 200, fill="pink") + theme(axis.text=element_text(size=12), axis.title=element_text(size=14,face="bold")) + xlab("MAF") + theme_classic()
-"
 # need to create a bed file from the vcf in order to enact the maf filter with following command:
 #--make-bed creates a new PLINK 1 binary fileset, after applying sample/variant filters and other operations
 # load the binary fileset plink.bed + plink.bim + plink.fam files with --bfile [prefix]
