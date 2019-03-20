@@ -1,6 +1,6 @@
 # convert vcf file to plink format file
 module load plink/1.90b3.38
-plink --id-delim _  --chr-set 12 --vcf CCXXIRAD.ref_alt_ratio.vcf --recode --out ../../results/myplink
+plink --id-delim _  --aec --vcf CCXXIRAD.ref_alt_ratio.vcf --recode --out ../../results/myplink
 
 # loads a (possibly gzipped) vcf file: --vcf <filename>
 # By default, when the GT field is absent, the variant is kept and all genotypes are set to missing. To skip the variant instead, use --vcf-require-gt.
@@ -31,8 +31,37 @@ plink --aec --vcf CCXXIRAD.ref_alt_ratio.vcf --pca 20 'header' 'tabs' 'var-wts' 
 # --read-freq loads a PLINK 1.07, PLINK 1.9, or GCTA allele frequency report, and estimates MAFs (and heterozygote frequencies, if the report is from --freqx) from the file instead of the current genomic data table. It can be combined with --maf-succ if the file contains observation counts.
 # how to generate the frequency data
 # --freq gz & --freqx gz
-# plink --aec --freqx gz --vcf CCXXIRAD.ref_alt_ratio.vcf --out ../../results/
+plink --aec --freq gz --vcf CCXXIRAD.ref_alt_ratio.vcf --out ../../results/
+plink --aec --id-delim _ --family --freq gz --vcf CCXXIRAD.ref_alt_ratio.vcf --out ../../results/F11
+plink --aec --id-delim _ --family --freq gz --vcf CCXXIRAD.ref_alt_ratio.vcf --out ../../results/F25
+zcat F11.frq.strat.gz | awk '$3 ~ /24/{print $6;}' > F25_MAF
+zcat F11.frq.strat.gz | awk '$3 ~ /267/{print $6;}' > F11_MAF
+# load files into R studio
+# convert all non-MAF's into true MAF's
+> F25_MAF[F25_MAF$V1 > 0.5, "V1"] <- 1 - (F25_MAF[F25_MAF$V1 > 0.5, "V1"] )
+> F11_MAF[F11_MAF$V1 > 0.5, "V1"] <- 1 - (F11_MAF[F11_MAF$V1 > 0.5, "V1"] )
+> minor_allele_freq[minor_allele_freq$MAF > 0.5, "MAF"] <- 1 - (minor_allele_freq[minor_allele_freq$MAF > 0.5, "MAF"] )
+# set up break points for frequency bars
+> br = seq(0,0.5,by=0.1)
+> ranges = paste(head(br,-1), br[-1], sep=" - ")
 
+freq25 = hist(F25_MAF$V1, breaks=br, include.lowest=TRUE, plot=FALSE)
+freq11 = hist(F11_MAF$V1, breaks=br, include.lowest=TRUE, plot=FALSE)
+both_pops = hist(minor_allele_freq$MAF, breaks=br, include.lowest=TRUE, plot=FALSE)
+
+F11_freq_counts = data.frame(range = ranges, frequency = freq11$counts)
+> F11_freq_counts
+F25_freq_counts = data.frame(range = ranges, frequency = freq25$counts)
+> F25_freq_counts
+both_freq_counts = data.frame(range = ranges, frequency = both_pops$counts)
+> both_freq_counts
+
+# then take the MAF column (cut -f5) from that per-site frequency file > minor_allele_freq
+# read into R, multiply by 100 to get percentages, and graph allele frequency spectrum as a bar graph
+minor_allele_freq <- read.csv("/bigdata/koeniglab/jmarz001/CCXXIRAD/results/minor_allele_freq", sep="")
+minor_allele_freq$MAF.Percent <- minor_allele_freq$MAF*100
+ggplot(minor_allele_freq, aes(MAF.Percent)) + geom_histogram(bins = 200, fill="pink") + theme(axis.text=element_text(size=12), axis.title=element_text(size=14,face="bold")) + xlab("MAF") + theme_classic()
+"
 # need to create a bed file from the vcf in order to enact the maf filter with following command:
 #--make-bed creates a new PLINK 1 binary fileset, after applying sample/variant filters and other operations
 # load the binary fileset plink.bed + plink.bim + plink.fam files with --bfile [prefix]
@@ -49,6 +78,9 @@ Total genotyping rate is 0.61556.
 (--maf/--max-maf/--mac/--max-mac).
 19218 variants and 351 people pass filters and QC.
 
+# minor allele frequency
+
+
 ########################################################
 # filter by linkage disequilibrium
 # 1. find argument for measuring/filtering LD
@@ -64,28 +96,6 @@ Total genotyping rate is 0.61556.
 module load plink/1.90b3.38
 
 # PARAMETER DECISIONS/TESTS
-plink --aec --bfile CCXXIRAD_maf --indep 10kb 100 50 --out CCXXIRAD_MAF_50LD
-
-Pruned 10 variants from chromosome 27, leaving 1236.
-Pruned 16 variants from chromosome 28, leaving 1366.
-Pruned 15 variants from chromosome 29, leaving 1396.
-Pruned 12 variants from chromosome 30, leaving 1314.
-Pruned 23 variants from chromosome 31, leaving 1519.
-Pruned 11 variants from chromosome 32, leaving 1466.
-Pruned 18 variants from chromosome 33, leaving 1160.
-Pruned 13 variants from chromosome 34, leaving 1358.
-Pruned 12 variants from chromosome 35, leaving 1121.
-Pruned 19 variants from chromosome 36, leaving 1431.
-Pruned 2 variants from chromosome 37, leaving 1300.
-Pruned 14 variants from chromosome 38, leaving 1428.
-Pruned 9 variants from chromosome 39, leaving 1418.
-Pruned 10 variants from chromosome 40, leaving 1232.
-Pruned 0 variants from chromosome 41, leaving 74.
-Pruned 6 variants from chromosome 42, leaving 209.
-Pruning complete.  190 of 19218 variants removed.
-
-plink --aec --bfile CCXXIRAD_maf --indep 10kb 100 20 --out CCXXIRAD_MAF_20LD
-
 plink --aec --bfile CCXXIRAD_maf --indep 10kb 100 10 --out CCXXIRAD_MAF_10LD
 Pruned 12 variants from chromosome 27, leaving 1234.
 Pruned 18 variants from chromosome 28, leaving 1364.
