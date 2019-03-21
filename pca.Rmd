@@ -6,14 +6,24 @@ pca_MAF_LD <- read.delim("/bigdata/koeniglab/jmarz001/CCXXIRAD/results/pca_MAF_L
 pca_MAF_LD$FID <- gsub("24", "F25", pca_MAF_LD$FID)
 pca_MAF_LD$FID <- gsub("267", "F11", pca_MAF_LD$FID)
 
-# produce pca colored by generation number
-ggplot(pca_MAF_LD, aes(PC1, PC2)) + geom_point(aes(color = pca$FID)) + xlab("PC1 (8.036%)") + theme_minimal() + ylab("PC2 (7.045%)") + scale_color_manual("Generations", values=wes_palette("GrandBudapest1")) + theme(axis.text=element_text(size=12)), axis.title=element_text(size=14,face="bold")
+# produce pca's colored by generation number
+# PC 1 & 2
+ggplot(pca_MAF_LD, aes(PC1, PC2)) + geom_point(aes(color = pca_MAF_LD$FID)) + xlab("PC1 (12.85%)") + theme_minimal() + ylab("PC2 (10.52%)") + scale_color_manual("Generations", values=wes_palette("GrandBudapest1")) + theme(axis.text=element_text(size=12), axis.title=element_text(size=14,face="bold"))
+# PC 2 & 3
+ggplot(pca_MAF_LD, aes(PC2, PC3)) + geom_point(aes(color = pca_MAF_LD$FID)) + xlab("PC2 (10.51%)") + theme_minimal() + ylab("PC3 (7.72%)") + scale_color_manual("Generations", values=wes_palette("GrandBudapest1")) + theme(axis.text=element_text(size=12), axis.title=element_text(size=14,face="bold"))
+# PC 3 & 4
+ggplot(pca_MAF_LD, aes(PC3, PC4)) + geom_point(aes(color = pca_MAF_LD$FID)) + xlab("PC3 (7.72%)") + theme_minimal() + ylab("PC4 (7.26%)") + scale_color_manual("Generations", values=wes_palette("GrandBudapest1")) + theme(axis.text=element_text(size=12), axis.title=element_text(size=14,face="bold"))
 
 
 # the smaller grouping to the "right" is made up of about 92 points, which, after filtering, represents about 1/4 of the samples sequenced; is this one of the four plates?
 # pca colored by plates
-pca_MAF_exclude_10LD$ID <- paste(pca_MAF_exclude_10LD$FID, pca_MAF_exclude_10LD$IID, sep="_")
-PCA_Plates <- PCA_Plates[,-c(4:7)]
-PCA_Plates2 <- merge(pca_MAF_exclude_10LD, PCA_Plates, sep="_")
-ggplot(PCA_Plates, aes(PC1, PC2)) + geom_point(aes(color=PCA_Plates$V1)) + theme_minimal() + scale_color_manual("Plate", values=wes_palette("GrandBudapest1", n=4)) + theme(axis.text=element_text(size=12), axis.title=element_text(size=14, face="bold"))
-# the pca clusters do not seem to be based on which plate they were made on/shelf grown on
+
+# first format the data
+# PCA_Plates is a data frame with individual-plate information; here I format to merge the information so that individual info doesn't get scrambled
+pca_MAF_LD$ID <- paste(pca_MAF_LD$FID, pca_MAF_LD$IID, sep="_")      #_
+PCA_Plates2 <- merge(pca_MAF_LD, PCA_Plates)
+
+# now graph that pca colored by plates
+ggplot(PCA_Plates2, aes(PC1, PC2)) + geom_point(aes(color=PCA_Plates2$V1)) + theme_minimal() + scale_color_manual("Sequencing Plates", labels = c("Plate 1", "Plate 2", "Plate 3", "Plate 4"), values=pal_2) + theme(axis.text=element_text(size=12), axis.title=element_text(size=14, face="bold")) + xlab("PC1 (12.85%)") + ylab("PC2 (10.52%)")
+
+# the pca clusters do not seem to be based on which plate they were made on/shelf grown on so that's good
