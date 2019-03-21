@@ -72,7 +72,6 @@ Total genotyping rate is 0.61556.
 
 module load plink/1.90b3.38
 
-# PARAMETER DECISIONS/TESTS
 plink --aec --bfile CCXXIRAD_maf --indep 10kb 100 10 --out CCXXIRAD_MAF_10LD
 Pruned 12 variants from chromosome 27, leaving 1234.
 Pruned 18 variants from chromosome 28, leaving 1364.
@@ -92,11 +91,35 @@ Pruned 0 variants from chromosome 41, leaving 74.
 Pruned 9 variants from chromosome 42, leaving 206.
 Pruning complete.  248 of 19218 variants removed.
 
-plink --aec --bfile CCXXIRAD_maf --indep 10kb 100 2 --out CCXXIRAD_MAF_2LD
-
 # when you're done graph the pca again
-plink --aec --bfile CCXXIRAD_maf --extract CCXXIRAD_MAF_50LD.prune.in --pca 20 'header' 'tabs' 'var-wts' --out pca_MAF_exclude_50LD
 plink --aec --bfile CCXXIRAD_maf --extract CCXXIRAD_MAF_10LD.prune.in --pca 20 'header' 'tabs' 'var-wts' --out pca_MAF_exclude_10LD
+
+# updtae with informed r^2 values for LD pruning (window=100kb, step=100, r^2=0.8 or 0.9)
+# --indep-pairwise <window size>['kb'] <step size (variant ct)> <r^2 threshold>
+cd /rhome/jmarz001/bigdata/CCXXIRAD/results
+plink --aec --bfile CCXXIRAD_maf --indep-pairwise 100kb 100 0.8 --out CCXXIRAD_MAF_LD
+Pruned 13 variants from chromosome 27, leaving 1233.
+Pruned 27 variants from chromosome 28, leaving 1355.
+Pruned 20 variants from chromosome 29, leaving 1391.
+Pruned 23 variants from chromosome 30, leaving 1303.
+Pruned 37 variants from chromosome 31, leaving 1505.
+Pruned 16 variants from chromosome 32, leaving 1461.
+Pruned 25 variants from chromosome 33, leaving 1153.
+Pruned 20 variants from chromosome 34, leaving 1351.
+Pruned 18 variants from chromosome 35, leaving 1115.
+Pruned 23 variants from chromosome 36, leaving 1427.
+Pruned 10 variants from chromosome 37, leaving 1292.
+Pruned 26 variants from chromosome 38, leaving 1416.
+Pruned 15 variants from chromosome 39, leaving 1412.
+Pruned 18 variants from chromosome 40, leaving 1224.
+Pruned 0 variants from chromosome 41, leaving 74.
+Pruned 9 variants from chromosome 42, leaving 206.
+Pruning complete.  300 of 19218 variants removed.
+
+# pca time
+plink --aec --bfile CCXXIRAD_maf --extract CCXXIRAD_MAF_LD.prune.in --pca 10 'header' 'tabs' 'var-wts' --out pca_MAF_LD
+# and now take the files over to R for graphing
+
 ##############
 # Not yet used notes
 
