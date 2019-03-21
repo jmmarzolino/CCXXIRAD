@@ -13,19 +13,27 @@ cd $DIR
 
 printf "ID \t Total Reads \t Mapped Reads\n" > $DIR/mapped
 
-map_list=`ls *.txt`
-for line in $map_list; do
+ls *.txt > map_list
+for line in map_list; do
   B=`grep "total" $line | cut --delimiter=\  -f1`
   C=`grep "mapped (" $line | cut --delimiter=\  -f1`
   D=`grep "mapped (" $line | cut --delimiter=\  -f5 | cut -d\( -f2`
   printf "$line \t $B \t $C \t $D \n" >> $DIR/mapped
 done
 
-ls *.txt > map_list
-for line in map_list; do
-  A=`cut $line --delimiter=_  -f1,2`
-  B=`grep "total" $DIR/$line | cut --delimiter=\  -f1`
-  C=`grep "mapped (" $DIR/$line | cut --delimiter=\  -f1`
-  D=`grep "mapped (" $DIR/$line | cut --delimiter=\  -f5 | cut -d\( -f2`
-  printf "$A \t $B \t $C \t $D \n" >> $DIR/mapped
+###AFTER
+#set and move to new working dir
+POST=/rhome/jmarz001/bigdata/CCXXIRAD/trim/fastqc
+cd $POST
+printf "Filename \t Total Sequences \n" > $POST/post_fileseqs.txt
+#make a list of all the directory names so they can be cd'd into in turn
+folders=`ls -d *fastqc/`
+#move into each directory from the list
+#copy directory name and Total Sequences line from fastqc data file into fileseqs
+for dir in $folders; do
+  cd $dir
+  A=`grep "Filename" fastqc_data.txt | cut -f2`
+  B=`grep "Total Sequences" fastqc_data.txt | cut -f2`
+  printf "$A\t$B\n" >> $POST/post_fileseqs.txt
+  cd ..
 done

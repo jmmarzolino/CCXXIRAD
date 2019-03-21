@@ -1,0 +1,11 @@
+
+
+calculate coverage from the # of reads you got per sample, compared to the number of positions in the genome you expect to get reads from
+```
+
+```
+> sample_stats <- read.delim("/bigdata/koeniglab/jmarz001/CCXXIRAD/calls/bcftools_filtered/sample_stats", header=FALSE, comment.char="#")
+>   View(sample_stats)
+> colnames(sample_stats) <- c("PSC", "id", "sample", "nRefHom", "nNonRefHom", "nHets", "nTransitions", "nTransversions", "nIndels", "avergae depth", "nSingletons", "nHapRef", "nHapAlt", "nMissing")
+
+sample_stats <- sample_stats[,-c(1,2,7,8,9, 11, 12, 13)]
