@@ -8,7 +8,7 @@
 #SBATCH --partition=koeniglab
 #SBATCH --array=1-16
 
-module load java gatk/4.0.12.0 samtools picard
+module load java gatk/4.0.12.0
 PICARD=/opt/linux/centos/7.x/x86_64/pkgs/picard/2.18.3/lib/picard.jar
 REF=/rhome/jmarz001/shared/GENOMES/NEW_BARLEY/GENOME_SPLIT/barley_split_reference.fa
 CHR=/rhome/jmarz001/bigdata/convergent_evolution/small_sample/args/chr_intervals.list
