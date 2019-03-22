@@ -6,15 +6,20 @@
 #SBATCH --mem-per-cpu=10G
 #SBATCH --time=1:00:00
 #SBATCH -p short
+#SBATCH --array=1-382
+
+WORK=/rhome/jmarz001/bigdata/CCXXIRAD/align
+cd $WORK
+SEQS=$WORK/bams
+module load samtools
+FILE=$(head -n $SLURM_ARRAY_TASK_ID $SEQS | tail -n 1)
+samtools view -c -F 260 $FILE >> file_reads
 
 
-DIR=/rhome/jmarz001/bigdata/CCXXIRAD/align/mappingstats
-cd $DIR
 
-printf "ID \t Total Reads \t Mapped Reads\n" > $DIR/mapped
 
 ls *.txt > map_list
-for line in map_list; do
+for line in $map_list; do
   B=`grep "total" $line | cut --delimiter=\  -f1`
   C=`grep "mapped (" $line | cut --delimiter=\  -f1`
   D=`grep "mapped (" $line | cut --delimiter=\  -f5 | cut -d\( -f2`
