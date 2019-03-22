@@ -1,13 +1,17 @@
+# calculate coverage from the # of reads you got per sample, compared to the number of positions in the genome you expect to get reads from
+file_reads <- read.table("/bigdata/koeniglab/jmarz001/CCXXIRAD/align/file_reads", quote="\"", comment.char="")
+View(file_reads)
+file_reads$Coverage <- (file_reads$V1 * 150) / 2000000
+ggplot(file_reads, aes(Coverage)) + geom_density(fill="pink", alpha=0.6)+ theme_minimal() + xlab("Individual Coverage")
+# V1 column contains individual read numbers from the bam files
+ggplot(file_reads, aes(V1)) + geom_density(fill="pink", alpha=0.6)+ theme_minimal() + xlab("Individual No. of Reads")
 
-
-calculate coverage from the # of reads you got per sample, compared to the number of positions in the genome you expect to get reads from
-```
-
-```
-> sample_stats <- read.delim("/bigdata/koeniglab/jmarz001/CCXXIRAD/calls/bcftools_filtered/sample_stats", header=FALSE, comment.char="#")
->   View(sample_stats)
-> colnames(sample_stats) <- c("PSC", "id", "sample", "nRefHom", "nNonRefHom", "nHets", "nTransitions", "nTransversions", "nIndels", "avergae depth", "nSingletons", "nHapRef", "nHapAlt", "nMissing")
-
+# coverage calculated from the number of variants in the vcf files
+sample_stats <- read.delim("/bigdata/koeniglab/jmarz001/CCXXIRAD/calls/bcftools_filtered/sample_stats", header=FALSE, comment.char="#")
+View(sample_stats)
+colnames(sample_stats) <- c("PSC", "id", "sample", "nRefHom", "nNonRefHom", "nHets", "nTransitions", "nTransversions", "nIndels", "avergae depth", "nSingletons", "nHapRef", "nHapAlt", "nMissing")
 sample_stats <- sample_stats[,-c(1,2,7,8,9, 11, 12, 13)]
-
-kpni_cutsites
+sample_stats$CoveredSites <- sample_stats$nRefHom + sample_stats$nNonRefHom + sample_stats$nHets
+sample_stats$Coverage <- sample_stats$CoveredSites / 1999416
+# kpni_cutsites = 1999416
+ggplot(sample_stats, aes(Coverage)) + geom_density(fill="pink", alpha=0.6) + theme_minimal() + xlab("Individual Coverage")
