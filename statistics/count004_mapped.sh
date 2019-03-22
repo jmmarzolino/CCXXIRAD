@@ -16,7 +16,7 @@ FILE=$(head -n $SLURM_ARRAY_TASK_ID $SEQS | tail -n 1)
 samtools view -c -F 260 $FILE >> file_reads
 
 
-
+################################################################################
 
 ls *.txt > map_list
 for line in $map_list; do
