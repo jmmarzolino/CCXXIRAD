@@ -9,3 +9,5 @@ calculate coverage from the # of reads you got per sample, compared to the numbe
 > colnames(sample_stats) <- c("PSC", "id", "sample", "nRefHom", "nNonRefHom", "nHets", "nTransitions", "nTransversions", "nIndels", "avergae depth", "nSingletons", "nHapRef", "nHapAlt", "nMissing")
 
 sample_stats <- sample_stats[,-c(1,2,7,8,9, 11, 12, 13)]
+
+kpni_cutsites
