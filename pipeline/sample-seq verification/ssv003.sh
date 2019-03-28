@@ -13,11 +13,11 @@
 # check alignment files
 module load bwa samtools bedtools
 
-WORK=/rhome/jmarz001/bigdata/CCXXIRAD/barcode/ssv
+WORK=/rhome/jmarz001/bigdata/CCXXIRAD/trim/ssv
 cd $WORK
 ls *.fq.gz >> filenames
 SEQLIST=$WORK/filenames.txt
-RESULT=/rhome/jmarz001/bigdata/CCXXIRAD/trim/ssv
+RESULT=/rhome/jmarz001/bigdata/CCXXIRAD/align/ssv
 mkdir $RESULT
 INDEX=/rhome/jmarz001/shared/GENOMES/NEW_BARLEY/GENOME_SPLIT/barley_split_reference.fa
 
