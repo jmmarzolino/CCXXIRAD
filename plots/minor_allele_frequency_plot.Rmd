@@ -43,3 +43,29 @@ df2 <- melt(df1)
 
 # now plot your 3 frequencies on a ggplot bar graph again, by 5%'s this time
 ggplot(df2, aes(x=range, y=value, fill=variable)) + geom_bar(stat='identity', position='dodge', width=0.7) + theme_classic() + xlab("Minor Allele Frequency Ranges") + ylab("Proportion") + scale_fill_brewer(palette = "YlOrRd")
+
+
+# add a neutral selection allele frequency spectrum function for comparison with your data
+# is my population deviating from neutral selection?
+
+# plot a function line over the top of my ggplot graph with stat_function
+#stat_function(mapping = NULL, data = NULL, geom = "path", position = "identity", fun, n = 101, args = list(), ...)
+# fun: function to use
+# n: number of points to interpolate along
+# args: list of additional arguments to pass to ‘fun’
+
+# original graph
+p <- ggplot(df2, aes(x=range, y=value, fill=variable)) + geom_bar(stat='identity', position='dodge', width=0.7) + theme_classic() + xlab("Minor Allele Frequency Ranges") + ylab("Proportion") + scale_fill_brewer(palette = "YlOrRd")
+
+# neutral selection function: 2Neu/i
+# Ne=population size, u = mutation rate, i=sites
+# mutation rate estimated from papers ~2.2*10^-6
+# CCXXI population size = 384 individuals * 5300000000 genomic sites * median coverage of 0.0000047 = 9565440
+# 9565440 results in line too small so I * 1000 = 9565440000
+# sites = 5,300,000,000
+# the finally add 1500 to the whole thing to just get the line above the minimum value of the MAFs so you can see where the line fits over the data
+funct <- function(x) ((9565440000*2*2.2)/(10000000*x)) + 1500
+p + stat_function(fun = funct)
+
+# also drew a y-intercept at 1500 so I could see it's about the lowest point on the graph and what a straight line over the data looks like
+p + stat_function(fun = funct) + geom_hline(yintercept=1500)
