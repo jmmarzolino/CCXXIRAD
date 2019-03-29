@@ -1,14 +1,12 @@
 #!/bin/bash -l
 
-#SBATCH --nodes=1
-#SBATCH --ntasks=13
-#SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=15G
+#SBATCH --ntasks=10
+#SBATCH --mem-per-cpu=30G
 #SBATCH --time=168:00:00
-#SBATCH --output=/rhome/jmarz001/bigdata/CCXXIRAD/Scripts/align_and_group.stdout
-#SBATCH --job-name='align+group'
+#SBATCH --output=jc003_align.stdout
+#SBATCH --job-name='jc003'
 #SBATCH -p batch
-#SBATCH --array=1-384
+#SBATCH --array=1-96
 
 # BWA Alignment into raw sorted alignment
 # then sam to sorted bam
@@ -17,36 +15,24 @@
 
 module load bwa samtools bedtools
 
-# Define location variables
-WORK=/rhome/jmarz001/bigdata/CCXXIRAD/CCXXIRAD2/barcode
+TRIM=/rhome/jmarz001/bigdata/CCXXIRAD/CCXXIRAD2/trim
 cd $WORK
-ls *trimmed.fq >> filenames.txt
-SEQLIST=/rhome/jmarz001/bigdata/CCXXIRAD/trim/filenames.txt
-RESULTSDIR=/rhome/jmarz001/bigdata/CCXXIRAD/align
+ls *trimmed.fq.gz >> filenames
+SEQS=$TRIM/filenames
+BAM=/rhome/jmarz001/bigdata/CCXXIRAD/CCXXIRAD2/align
 INDEX=/rhome/jmarz001/shared/GENOMES/NEW_BARLEY/GENOME_SPLIT/barley_split_reference.fa
 
-# Define files to run over
-# get filenames from list
-FILE=$(head -n $SLURM_ARRAY_TASK_ID $SEQLIST | tail -n 1)
-# get basename of file, stripping at "."
-#yields first part of basename, ie. everything before decimal (267_188_trimmed.fq -> 267_188_trimmed)
+FILE=$(head -n $SLURM_ARRAY_TASK_ID $SEQS | tail -n 1)
+# (267_188_trimmed.fq -> 267_188_trimmed)
 NAME=$(basename "$FILE" | cut -d. -f1)
-#yields numeric basename, ie. (267_188_trimmed -> 267_188)
+# (267_188_trimmed -> 267_188)
 SHORT=$(basename "$FILE" | cut -d. -f1 | cut -d_ -f1-2)
-
-##RGPU (String)	Read Group platform unit (eg. run barcode) Required.
-#define the ID# list based on which lane they're from
-BAR=/rhome/jmarz001/bigdata/CCXXIRAD/barcode/BARCODE_FILES/
-#file with info containing file name/ID in one column and plate on another (from group_test.sh script which copied lines from Hv## barcode files into new 'plates' file with addition of plate info column based on which barcode file they came from)
-PLATES=$BAR/plates
-RGPU=$(grep "$SHORT" $PLATES | cut -f4)
-#cut so only the plate info is used
 
 ##RGLB (String)	Read Group library Required.
 #RGLB=<"24=F25=late, 267=F11=early">
 #yields numeric basename/generation, ie. (267_188 -> 267)
 X=$(basename "$SHORT" | cut -d_ -f1)
-Y=24
+Y=25
 
 if [ "$X" == "$Y" ]; then
   RGLB=F25
@@ -54,17 +40,17 @@ else
   RGLB=F11
 fi
 
-bwa mem -R "@RG\tID:$SLURM_ARRAY_TASK_ID\tSM:$SHORT\tPU:$RGPU\tLB:$RGLB" -t 10 $INDEX $WORKINGDIR/"$NAME".fq > $RESULTSDIR/"$SHORT".sam
+bwa mem -R "@RG\tID:$SHORT_$SLURM_ARRAY_TASK_ID\tSM:$SHORT\tPU:$RGLB\tLB:Illumina_lib1" -t 10 $INDEX $TRIM/"$NAME".fq.gz > $BAM/"$SHORT".sam
 
 # mapping stats
-samtools flagstat $RESULTSDIR/"$SHORT".sam > $RESULTSDIR/mappingstats/"$SHORT"_mapstats.txt
+samtools flagstat $BAM/"$SHORT".sam > $BAM/mappingstats/"$SHORT"_mapstats.txt
 
 # sam to sorted bam and index long bams with csi file
-samtools view -bS $RESULTSDIR/"$SHORT".sam | samtools sort -o $RESULTSDIR/"$SHORT".bam
-samtools index -c $RESULTSDIR/"$SHORT".bam
+samtools view -bS $BAM/"$SHORT".sam | samtools sort -o $BAM/"$SHORT".bam
+samtools index -c $BAM/"$SHORT".bam
 
 # extract unmapped reads
-samtools view -f4 -b $RESULTSDIR/"$SHORT".bam > $RESULTSDIR/"$SHORT".unmapped.bam
+samtools view -f4 -b $BAM/"$SHORT".bam > $BAM/"$SHORT".unmapped.bam
 
 # export unmapped reads from original reads
-bedtools bamtofastq -i $RESULTSDIR/"$SHORT".unmapped.bam -fq $RESULTSDIR/"$SHORT".unmapped.fq
+bedtools bamtofastq -i $BAM/"$SHORT".unmapped.bam -fq $BAM/"$SHORT".unmapped.fq
