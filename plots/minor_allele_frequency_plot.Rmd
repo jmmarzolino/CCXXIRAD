@@ -55,7 +55,7 @@ ggplot(df2, aes(x=range, y=value, fill=variable)) + geom_bar(stat='identity', po
 # args: list of additional arguments to pass to ‘fun’
 
 # original graph
-p <- ggplot(df2, aes(x=range, y=value, fill=variable)) + geom_bar(stat='identity', position='dodge', width=0.7) + theme_classic() + xlab("Minor Allele Frequency Ranges") + ylab("Proportion") + scale_fill_brewer(palette = "YlOrRd")
+p <- ggplot(df2, aes(x=range, y=value, fill=variable)) + geom_bar(stat='identity', position='dodge', width=0.7) + theme_classic() + xlab("Minor Allele Frequency Ranges") + ylab("Frequency") + scale_fill_brewer(palette = "YlOrRd")
 
 # neutral selection function: 2Neu/i
 # Ne=population size, u = mutation rate, i=sites
@@ -64,7 +64,7 @@ p <- ggplot(df2, aes(x=range, y=value, fill=variable)) + geom_bar(stat='identity
 # effective population size = theta/4u = 0.005/4*7e-09 = 178571.4
 
 # the finally add 1500 to the whole thing to just get the line above the minimum value of the MAFs so you can see where the line fits over the data
-funct <- function(x) ((*2*2.2)/(10000000*x)) + 1500
+funct <- function(x) ((178571.4*2*7e-09)/(x)) + 1500
 p + stat_function(fun = funct)
 
 # also drew a y-intercept at 1500 so I could see it's about the lowest point on the graph and what a straight line over the data looks like
