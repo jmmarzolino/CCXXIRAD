@@ -18,5 +18,8 @@ REGION=$(head -n $SLURM_ARRAY_TASK_ID $CHR | tail -n 1)
 
 module load freebayes/1.2.0
 
+cd $BAM ; mkdir unmapped
+mv *.unmapped.bam $BAM/unmapped/ ; mv *.unmapped.fq $BAM/unmapped/
+
 #freebayes -f [reference] [infiles.bam] > [outfiles.vcf]
 freebayes -k -f $REF -r $REGION $BAM/*.bam > $SNP/rad.$REGION.vcf
