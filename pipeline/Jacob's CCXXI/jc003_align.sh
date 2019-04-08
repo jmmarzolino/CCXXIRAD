@@ -16,7 +16,7 @@
 module load bwa samtools bedtools
 
 TRIM=/rhome/jmarz001/bigdata/CCXXIRAD/CCXXIRAD2/trim
-cd $WORK
+cd $TRIM
 ls *trimmed.fq.gz >> filenames
 SEQS=$TRIM/filenames
 BAM=/rhome/jmarz001/bigdata/CCXXIRAD/CCXXIRAD2/align
@@ -50,7 +50,8 @@ samtools view -bS $BAM/"$SHORT".sam | samtools sort -o $BAM/"$SHORT".bam
 samtools index -c $BAM/"$SHORT".bam
 
 # extract unmapped reads
-samtools view -f4 -b $BAM/"$SHORT".bam > $BAM/"$SHORT".unmapped.bam
+mkdir $BAM/unmapped/
+samtools view -f4 -b $BAM/"$SHORT".bam > $BAM/unmapped/"$SHORT".unmapped.bam
 
 # export unmapped reads from original reads
-bedtools bamtofastq -i $BAM/"$SHORT".unmapped.bam -fq $BAM/"$SHORT".unmapped.fq
+bedtools bamtofastq -i $BAM/unmapped/"$SHORT".unmapped.bam -fq $BAM/unmapped/"$SHORT".unmapped.fq
