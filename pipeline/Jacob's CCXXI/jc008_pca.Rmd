@@ -1,10 +1,10 @@
 # Plotting
 # Load the .eigenvec file & plot the columns you're interested in
-pca_MAF_LD <- read.delim("/bigdata/koeniglab/jmarz001/CCXXIRAD/results/pca_MAF_LD.eigenvec")
+JBL <- read.delim("/bigdata/koeniglab/jmarz001/CCXXIRAD/CCXXIRAD2/results/JBL.eigenvec")
 
 # replace KL numbers with generation numbers for plotting
-pca_MAF_LD$FID <- gsub("24", "F25", pca_MAF_LD$FID)
-pca_MAF_LD$FID <- gsub("267", "F11", pca_MAF_LD$FID)
+JBL$FID <- gsub("24", "F25", JBL$FID)
+JBL$FID <- gsub("267", "F11", JBL$FID)
 
 # produce pca's colored by generation number
 # PC 1 & 2
