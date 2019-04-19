@@ -29,8 +29,11 @@ plink --aec --bfile combo_maf --extract combo_maf_LD.prune.in --pca 5 'header' '
 # Plotting in R
 # Load the .eigenvec file & plot the columns you're interested in
 combo_filt <- read.delim("/bigdata/koeniglab/jmarz001/CCXXIRAD/CCXXIRAD2/results/combo_filt.eigenvec")
+> combo_filt$researcher <- "JM"
+> combo_filt[352:437,8] <- "JBL"
 
 # replace KL numbers with generation numbers for plotting
+combo_filt$FID <- gsub("25", "24", combo_filt$FID)
 combo_filt$FID <- gsub("24", "F25", combo_filt$FID)
 combo_filt$FID <- gsub("267", "F11", combo_filt$FID)
 
@@ -51,3 +54,12 @@ ggplot(combo_filt, aes(PC2, PC3)) + geom_point(aes(color=combo_filt$FID)) + xlab
 ggplot(combo_filt, aes(PC3, PC4)) + geom_point(aes(color=combo_filt$FID)) + xlab("PC3 (10.9%)") + theme_minimal() + ylab("PC4 (9.5%)") + scale_color_manual("Generations", values=wes_palette("GrandBudapest1")) + theme(axis.text=element_text(size=12), axis.title=element_text(size=14,face="bold"))
 # PC 4 & 5
 ggplot(combo_filt, aes(PC4, PC5)) + geom_point(aes(color=combo_filt$FID)) + xlab("PC4 (9.5%)") + theme_minimal() + ylab("PC5 (8.3%)") + scale_color_manual("Generations", values=wes_palette("GrandBudapest1")) + theme(axis.text=element_text(size=12), axis.title=element_text(size=14,face="bold"))
+
+
+# Time to filter out those outlier points in the upper left corner
+> combo_filt[which(combo_filt[,4]>0.16),1:4]
+    FID IID       PC1      PC2
+409 F11   2 -0.123941 0.173132
+411 F11  21 -0.139206 0.169382
+412 F11  22 -0.126240 0.168915
+420 F11   3 -0.132837 0.171113
