@@ -1,0 +1,20 @@
+# combo pca graphing
+# read in data
+combo_filt_outliers <- read.delim("~/bigdata/CCXXIRAD/CCXXIRAD2/results/combo_filt_outliers.eigenvec")
+# correct Family ID col
+combo_filt_outliers$FID <- gsub("25", "24", combo_filt_outliers$FID)
+combo_filt_outliers$FID <- gsub("24", "F25", combo_filt_outliers$FID)
+combo_filt_outliers$FID <- gsub("267", "F11", combo_filt_outliers$FID)
+
+# plot pca by generation without outliers
+ggplot(combo_filt_outliers, aes(PC1, PC2)) + geom_point(aes(color=combo_filt_outliers$FID))+ xlab("PC1") + theme_minimal() + ylab("PC2") + theme(axis.text=element_text(size=12), axis.title=element_text(size=14,face="bold")) +scale_color_manual("Generations", values=c("darkseagreen", "palevioletred3"))
+# add combined researcher column
+combo_filt_outliers$F_researcher <- paste(combo_filt$FID, combo_filt$researcher, sep="_")
+# plot pca by generation and reseracher
+ggplot(combo_filt_outliers, aes(PC1, PC2)) + geom_point(aes(color=combo_filt_outliers$F_researcher))+ xlab("PC1") + theme_minimal() + ylab("PC2") + theme(axis.text=element_text(size=12), axis.title=element_text(size=14,face="bold")) + scale_color_manual("Generation & Generator", values=c("darkseagreen", "hotpink2", "springgreen4", "red3"))
+
+# just JBL pca graphing
+JBL_filt_outliers <- read.delim("~/bigdata/CCXXIRAD/CCXXIRAD2/results/JBL_filt_outliers.eigenvec")
+# convert FID col
+JBL_filt_outliers$FID <- gsub("25", "F25", JBL_filt_outliers$FID)
+JBL_filt_outliers$FID <- gsub("267", "F11", JBL_filt_outliers$FID)
