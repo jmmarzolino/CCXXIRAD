@@ -15,4 +15,5 @@ SAMP=$WORK/keep_samples.txt
 bgzip --threads 3 $FILE
 bcftools index --threads 3 --csi $FILE.gz
 # sample file must contain samples to subset by (ie. those included and not excluded)?
-bcftools view --threads 3 -e --samples-file $SAMP --force-samples -o $WORK/CCXXIRAD.inv_filt.vcf $FILE.gz
+# to exclude the samples in the file use: -S ^$SAMP
+bcftools view --threads 3 --samples-file $SAMP --force-samples -o $WORK/CCXXIRAD.inv_filt.vcf $FILE.gz
