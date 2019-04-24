@@ -1,0 +1,20 @@
+# Plotting in R
+# Load the .eigenvec file & plot the columns you're interested in
+CCXXIRAD2_filt_pruned <- read.delim("/bigdata/koeniglab/jmarz001/CCXXIRAD/results/CCXXIRAD2_filt_pruned.eigenvec")
+
+# replace KL numbers with generation numbers for plotting
+CCXXIRAD2_filt_pruned$FID <- gsub("24", "F25", CCXXIRAD2_filt_pruned$FID)
+CCXXIRAD2_filt_pruned$FID <- gsub("267", "F11", CCXXIRAD2_filt_pruned$FID)
+
+# eigenvalues
+12.85250
+10.51590
+7.72054
+7.26181
+6.49933
+
+# produce pca's colored by generation number
+# PC 1 & 2
+ggplot(CCXXIRAD2_filt_pruned, aes(PC1, PC2)) + geom_point(aes(color=CCXXIRAD2_filt_pruned$FID)) + xlab("PC1 (12.8%)") + theme_minimal() + ylab("PC2 (10.5%)") + scale_color_manual("Generations", values=c('darkseagreen', 'hotpink2')) + theme(axis.text=element_text(size=12), axis.title=element_text(size=14,face="bold"))
+
+# the cluster structure was not caused by unmapped reads
