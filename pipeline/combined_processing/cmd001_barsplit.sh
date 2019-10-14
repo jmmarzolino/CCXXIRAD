@@ -7,6 +7,7 @@
 #SBATCH --time=5-00:00:00
 #SBATCH --output=/rhome/jmarz001/bigdata/CCXXIRAD/combined_CCXXI/scripts/cmd001_barsplit.stdout
 #SBATCH --job-name='barcode_split'
+#SBATCH --array=1-4
 
 #Separate raw RAD reads by barcode using STACKS program
 module load stacks/2.0
@@ -15,24 +16,12 @@ module load stacks/2.0
 #--filter_illumina: discard reads that have been marked by Illumina's chastity/purity filter as failing
 
 # define file locations
+FASTQ_FILES=/rhome/jmarz001/bigdata/CCXXIRAD/combined_CCXXI/args/fastq_files
+FILE=$(head -n $SLURM_ARRAY_TASK_ID $FASTQ_FILES | cut -f1 | tail -n 1)
+BARCODE_FILE=$(head -n $SLURM_ARRAY_TASK_ID $FASTQ_FILES | cut -f2 | tail -n 1)
 SPLIT_FASTQS=/rhome/jmarz001/bigdata/CCXXIRAD/combined_CCXXI/data/raw_reads
 
-process_radtags -f /rhome/jmarz001/shared/SEQ_RUNS/9_14_2018/FASTQ/slimsdata.genomecenter.ucdavis.edu/Data/tyvcdh8myc/Unaligned/Project_DKJM_HvRADP3/HvRADP3_S5_L005_R1_001.fastq.gz \
--b /rhome/jmarz001/bigdata/CCXXIRAD/barcode/BARCODE_FILES/HvRADP3_barcodes.txt \
--o $SPLIT_FASTQS \
--e kpnI --retain_header
-
-process_radtags -f /rhome/jmarz001/shared/SEQ_RUNS/9_14_2018/FASTQ/slimsdata.genomecenter.ucdavis.edu/Data/0g5kd427pb/Unaligned/Project_DKJM_HvRADY3/HvRADY3_S6_L006_R1_001.fastq.gz \
--b /rhome/jmarz001/bigdata/CCXXIRAD/barcode/BARCODE_FILES/HvRADY3_barcodes.txt \
--o $SPLIT_FASTQS \
--e kpnI --retain_header
-
-process_radtags -f /rhome/jmarz001/shared/SEQ_RUNS/9_14_2018/FASTQ/slimsdata.genomecenter.ucdavis.edu/Data/9e0rmu9j/Unaligned/Project_DKJM_HvRADO2/HvRADO2_S7_L007_R1_001.fastq.gz \
--b /rhome/jmarz001/bigdata/CCXXIRAD/barcode/BARCODE_FILES/HvRADO2_barcodes.txt \
--o $SPLIT_FASTQS \
--e kpnI --retain_header
-
-process_radtags -f /rhome/jmarz001/shared/SEQ_RUNS/9_14_2018/FASTQ/slimsdata.genomecenter.ucdavis.edu/Data/2tyrhwu7zo/Unaligned/Project_DKJM_HvRADA2/HvRADA2_S8_L008_R1_001.fastq.gz \
--b /rhome/jmarz001/bigdata/CCXXIRAD/barcode/BARCODE_FILES/HvRADA2_barcodes.txt \
+process_radtags -f $FILE \
+-b $BARCODE_FILE \
 -o $SPLIT_FASTQS \
 -e kpnI --retain_header
