@@ -16,8 +16,9 @@ ADAPTERDIR=/opt/linux/centos/7.x/x86_64/pkgs/trimmomatic/0.33/adapters
 
 # define files and directories
 SPLIT_FASTQS=/rhome/jmarz001/bigdata/CCXXIRAD/combined_CCXXI/data/raw_reads
-SEQS=$SPLIT_FASTQS/raw_file_list
-ls $SPLIT_FASTQS/*.fq.gz > $SEQS
+SEQS=raw_file_list
+cd $SPLIT_FASTQS ; ls *.fq.gz > $SEQS
+mkdir trimmed
 TRIMMED=/rhome/jmarz001/bigdata/CCXXIRAD/combined_CCXXI/data/trimmed
 
 # get filenames from list
