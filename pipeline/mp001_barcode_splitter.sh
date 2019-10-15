@@ -43,4 +43,3 @@ process_radtags -f /rhome/jmarz001/shared/SEQ_RUNS/9_14_2018/FASTQ/slimsdata.gen
 -b /rhome/jmarz001/bigdata/CCXXIRAD/barcode/BARCODE_FILES/HvRADA2_barcodes.txt \
 -o /rhome/jmarz001/bigdata/CCXXIRAD/barcode/ \
 -e kpnI --retain_header
-
