@@ -16,10 +16,9 @@ ADAPTERDIR=/opt/linux/centos/7.x/x86_64/pkgs/trimmomatic/0.33/adapters
 
 # define files and directories
 SPLIT_FASTQS=/rhome/jmarz001/bigdata/CCXXIRAD/combined_CCXXI/data/raw_reads
-TRIMMED=/rhome/jmarz001/bigdata/CCXXIRAD/combined_CCXXI/data/trimmed
-
 SEQS=$SPLIT_FASTQS/raw_file_list
 ls $SPLIT_FASTQS/*.fq.gz > $SEQS
+TRIMMED=/rhome/jmarz001/bigdata/CCXXIRAD/combined_CCXXI/data/trimmed
 
 # get filenames from list
 FILE=$(head -n $SLURM_ARRAY_TASK_ID $SEQS | tail -n 1)
@@ -28,52 +27,6 @@ NAME=$(basename "$FILE" | cut -d. -f1)
 
 # Quality/Adapter trimming
 java -jar $TRIMMOMATIC SE -threads 4 \
-$RAW/${FILE} $TRIM/${NAME}_trimmed.fq.gz \
+$SPLIT_FASTQS/${FILE} $TRIMMED/${NAME}_trimmed.fq.gz \
 ILLUMINACLIP:${ADAPTERDIR}/TruSeq3-SE.fa:2:30:10 \
 LEADING:5 TRAILING:5 SLIDINGWINDOW:4:20 MINLEN:36
-
-
-
-#load software
-module load trimmomatic/0.36
-
-# make variables for location of trimmomatic, adapter file, working directory, results directory, and sequence list
-TRIMMOMATIC=/opt/linux/centos/7.x/x86_64/pkgs/trimmomatic/0.36/trimmomatic.jar
-ADAPTERDIR=/opt/linux/centos/7.x/x86_64/pkgs/trimmomatic/0.33/adapters
-
-WORKINGDIR=/rhome/jmarz001/bigdata/CCXXIRAD/barcode
-RESULTSDIR=/rhome/jmarz001/bigdata/CCXXIRAD/trim
-SEQLIST=/rhome/jmarz001/bigdata/CCXXIRAD/barcode/seqs
-
-# cd to working directory
-cd $WORKINGDIR
-
-# get filenames from list
-FILE=$(head -n $SLURM_ARRAY_TASK_ID $SEQLIST | tail -n 1)
-# get basename of file, stripping at "."
-NAME=$(basename "$FILE" | cut -d. -f1)
-
-# Quality/Adapter trimming
-java -jar $TRIMMOMATIC SE -threads 4 \
-$WORKINGDIR/"$NAME".fq $RESULTSDIR/"$NAME"_trimmed.fq \
-ILLUMINACLIP:"$ADAPTERDIR"/TruSeq3-SE.fa:2:30:10 \
-LEADING:5 TRAILING:5 SLIDINGWINDOW:4:20 MINLEN:36
-
-#Step options:
-#ILLUMINACLIP:<fastaWithAdaptersEtc>:<seed mismatches>:<palindrome clip threshold>:<simple clip threshold>
-#fastaWithAdaptersEtc: specifies the path to a fasta file containing all the adapters, PCR sequences etc. The naming of the various sequences within this file determines how they are used. See below.
-#seedMismatches: specifies the maximum mismatch count which will still allow a full match to be performed
-#palindromeClipThreshold: specifies how accurate the match between the two 'adapter ligated' reads must be for PE palindrome read alignment.
-#simpleClipThreshold: specifies how accurate the match between any adapter etc. sequence must be against a read.
-
-#SLIDINGWINDOW:<windowSize>:<requiredQuality>
-#windowSize: specifies the number of bases to average across
-#requiredQuality: specifies the average quality required.
-
-#LEADING:<quality>
-#quality: Specifies the minimum quality required to keep a base.
-#TRAILING:<quality>
-#quality: Specifies the minimum quality required to keep a base.
-
-#MINLEN:<length>
-#length: Specifies the minimum length of reads to be kept.
