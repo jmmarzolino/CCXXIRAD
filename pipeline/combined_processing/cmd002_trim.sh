@@ -1,26 +1,25 @@
 #!/usr/bin/bash -l
 
-#SBATCH -p short
+#SBATCH -p koeniglab
 #SBATCH --ntasks=4
-#SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=15G
-#SBATCH --time=2:00:00
-#SBATCH --output=/rhome/jmarz001/bigdata/CCXXIRAD/CCXXIRAD2/scripts/jc002_trim.stdout
-#SBATCH --job-name='jc002'
-#SBATCH --array=1-96
+#SBATCH --mem-per-cpu=20G
+#SBATCH --time=5-00:00:00
+#SBATCH --output=/rhome/jmarz001/bigdata/CCXXIRAD/combined_CCXXI/scripts/cmd002_trim.stdout
+#SBATCH --job-name='rad_trim'
+#SBATCH --array=1-468
 
 #load software
 module load trimmomatic/0.36
-
-# make variables for location of trimmomatic, adapter file, working directory, results directory, and sequence list
+# set software and adapter variables
 TRIMMOMATIC=/opt/linux/centos/7.x/x86_64/pkgs/trimmomatic/0.36/trimmomatic.jar
 ADAPTERDIR=/opt/linux/centos/7.x/x86_64/pkgs/trimmomatic/0.33/adapters
 
-RAW=/rhome/jmarz001/bigdata/CCXXIRAD/CCXXIRAD2/barcode
-cd $RAW
-TRIM=/rhome/jmarz001/bigdata/CCXXIRAD/CCXXIRAD2/trim
-SEQS=$RAW/raw_files
-ls *.fq.gz > $SEQS
+# define files and directories
+SPLIT_FASTQS=/rhome/jmarz001/bigdata/CCXXIRAD/combined_CCXXI/data/raw_reads
+TRIMMED=/rhome/jmarz001/bigdata/CCXXIRAD/combined_CCXXI/data/trimmed
+
+SEQS=$SPLIT_FASTQS/raw_file_list
+ls $SPLIT_FASTQS/*.fq.gz > $SEQS
 
 # get filenames from list
 FILE=$(head -n $SLURM_ARRAY_TASK_ID $SEQS | tail -n 1)
@@ -34,20 +33,6 @@ ILLUMINACLIP:${ADAPTERDIR}/TruSeq3-SE.fa:2:30:10 \
 LEADING:5 TRAILING:5 SLIDINGWINDOW:4:20 MINLEN:36
 
 
-
-#!/usr/bin/bash -l
-
-#SBATCH -p koeniglab
-#SBATCH --nodes=1
-#SBATCH --ntasks=4
-#SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=32G
-#SBATCH --time=72:00:00
-#SBATCH --output=/rhome/jmarz001/bigdata/CCXXIRAD/Scripts/trim.stdout
-#SBATCH --mail-user=jmarz001@ucr.edu
-#SBATCH --mail-type=ALL
-#SBATCH --job-name='rad_trim'
-#SBATCH --array=1-384
 
 #load software
 module load trimmomatic/0.36
