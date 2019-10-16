@@ -6,12 +6,11 @@
 #SBATCH --output=/rhome/jmarz001/bigdata/CCXXIRAD/combined_CCXXI/scripts/cmd003_align.stdout
 #SBATCH --job-name='align'
 #SBATCH -p koeniglab
-#SBATCH --array=1-468
+#SBATCH --array=1-468%10
 
 module load minimap2 samtools
 INDEX=/rhome/jmarz001/shared/GENOMES/BARLEY/2019_Release_Morex_vers2/Barley_Morex_V2_pseudomolecules.fasta
-# minimap2 index
-MINDEX=/rhome/jmarz001/shared/GENOMES/BARLEY/2019_Release_Morex_vers2/Barley.mmi
+MINDEX=/rhome/jmarz001/shared/GENOMES/BARLEY/2019_Release_Morex_vers2/Barley.mmi # minimap2 index
 PROJECT_DIR=/rhome/jmarz001/bigdata/CCXXIRAD/combined_CCXXI
 # Define location variables
 TRIMMED=$PROJECT_DIR/data/trimmed
@@ -25,10 +24,6 @@ cd $TRIMMED ; ls *trimmed.fq.gz >> $SEQS
 FILE=$(head -n $SLURM_ARRAY_TASK_ID $SEQS | tail -n 1)
 # 267_188_trimmed.fq.gz -> 267_188_trimmed -> 267_188
 sample_name=$(basename "$FILE" | cut -d. -f1 | cut -d_ -f1-2)
-
-
-
-run_name=$(head -n ${SLURM_ARRAY_TASK_ID} $SEQS | tail -n 1 | cut -f3 | cut -d_ -f3)
 
 ##RGPU (String)	Read Group platform unit (eg. run barcode) Required.
 
