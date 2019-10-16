@@ -39,11 +39,12 @@ generation=$(basename "$FILE" | cut -d. -f1 | cut -d_ -f1)
 # KL numbers
 X=267 ; Y=24 ; Z=25
 
+# if expression1 then statement1 else if expression2 then statement2 else statement3
 if [ "$generation" == "$X" ]; then
   RGLB=F11
-elif [ "$generation" == "$Y" ]
+else if [ "$generation" == "$Y" ]; then
   RGLB=F25
-elif [ "$generation" == "$Z" ]
+else if [ "$generation" == "$Z" ]; then
   RGLB=F29
 else
   RGLB=error
