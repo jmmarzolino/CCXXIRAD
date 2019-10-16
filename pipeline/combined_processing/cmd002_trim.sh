@@ -15,11 +15,14 @@ TRIMMOMATIC=/opt/linux/centos/7.x/x86_64/pkgs/trimmomatic/0.36/trimmomatic.jar
 ADAPTERDIR=/opt/linux/centos/7.x/x86_64/pkgs/trimmomatic/0.33/adapters
 
 # define files and directories
-SPLIT_FASTQS=/rhome/jmarz001/bigdata/CCXXIRAD/combined_CCXXI/data/raw_reads
-SEQS=raw_file_list
+PROJECT_DIR=/rhome/jmarz001/bigdata/CCXXIRAD/combined_CCXXI
+
+SPLIT_FASTQS=$PROJECT_DIR/data/raw_reads
+SEQS=$PROJECT_DIR/args/raw_file_list
 cd $SPLIT_FASTQS ; ls *.fq.gz > $SEQS
-mkdir trimmed
-TRIMMED=/rhome/jmarz001/bigdata/CCXXIRAD/combined_CCXXI/data/trimmed
+
+TRIMMED=$PROJECT_DIR/data/trimmed
+mkdir $TRIMMED
 
 # get filenames from list
 FILE=$(head -n $SLURM_ARRAY_TASK_ID $SEQS | tail -n 1)
