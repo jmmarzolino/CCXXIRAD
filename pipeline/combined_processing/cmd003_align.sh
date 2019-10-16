@@ -10,7 +10,8 @@
 
 module load minimap2 samtools
 INDEX=/rhome/jmarz001/shared/GENOMES/BARLEY/2019_Release_Morex_vers2/Barley_Morex_V2_pseudomolecules.fasta
-
+# minimap2 index
+MINDEX=/rhome/jmarz001/shared/GENOMES/BARLEY/2019_Release_Morex_vers2/Barley.mmi
 PROJECT_DIR=/rhome/jmarz001/bigdata/CCXXIRAD/combined_CCXXI
 # Define location variables
 TRIMMED=$PROJECT_DIR/data/trimmed
@@ -25,44 +26,47 @@ FILE=$(head -n $SLURM_ARRAY_TASK_ID $SEQS | tail -n 1)
 # 267_188_trimmed.fq.gz -> 267_188_trimmed -> 267_188
 sample_name=$(basename "$FILE" | cut -d. -f1 | cut -d_ -f1-2)
 
+
+
 run_name=$(head -n ${SLURM_ARRAY_TASK_ID} $SEQS | tail -n 1 | cut -f3 | cut -d_ -f3)
 
-
-
 ##RGPU (String)	Read Group platform unit (eg. run barcode) Required.
-#define the ID# list based on which lane they're from
-BAR=/rhome/jmarz001/bigdata/CCXXIRAD/barcode/BARCODE_FILES/
-#file with info containing file name/ID in one column and plate on another (from group_test.sh script which copied lines from Hv## barcode files into new 'plates' file with addition of plate info column based on which barcode file they came from)
-PLATES=$BAR/plates
-RGPU=$(grep "$SHORT" $PLATES | cut -f4)
-#cut so only the plate info is used
 
 ##RGLB (String)	Read Group library Required.
-#RGLB=<"24=F25=late, 267=F11=early">
-#yields numeric basename/generation, ie. (267_188 -> 267)
-X=$(basename "$SHORT" | cut -d_ -f1)
-Y=24
+#RGLB=<"24=F25, 267=F11, 25=F29">
+#yields generation number
+generation=$(basename "$FILE" | cut -d. -f1 | cut -d_ -f1)
+# KL numbers
+X=267 ; Y=24 ; Z=25
 
-if [ "$X" == "$Y" ]; then
-  RGLB=F25
-else
+if [ "$generation" == "$X" ]; then
   RGLB=F11
+elif [ "$generation" == "$Y" ]
+  RGLB=F25
+elif [ "$generation" == "$Z" ]
+  RGLB=F29
+else
+  RGLB=error
 fi
 
 # BWA mapping
-bwa mem -R "@RG\tID:$SLURM_ARRAY_TASK_ID\tSM:$SHORT\tPU:$RGPU\tLB:$RGLB" -t 10 $INDEX $WORKINGDIR/"$NAME".fq > $RESULTSDIR/"$SHORT".sam
+bwa mem -R "@RG\tID:${sample_name}_${SLURM_ARRAY_TASK_ID}\tSM:${sample_name}\tPU:"illumina"\tLB:$RGLB" -t 10 $INDEX $TRIMMED/${sample_name}_${run_name}.fq.gz > $BAMS/bwa_${sample_name}_${run_name}.sam
 
 # Minimap2 mapping
-minimap2 -t 10 -ax sr /rhome/jmarz001/shared/GENOMES/BARLEY/2019_Release_Morex_vers2/Barley.mmi \
-
--R "@RG\tID:${sample_barcode}_${sample_name}_${SLURM_ARRAY_TASK_ID}\tPL:illumina\tSM:${sample_name}\tLB:${sample_name}" \
+minimap2 -t 10 -ax sr $MINDEX \
+-R "@RG\tID:${sample_name}_${SLURM_ARRAY_TASK_ID}\tSM:${sample_name}\tPU:illumina\tLB:$RGLB" \
 $TRIMMED/${sample_name}_${run_name}.fq.gz \
-> $BAMS/${sample_name}_${run_name}.sam
+> $BAMS/mini_${sample_name}_${run_name}.sam
 
 # Get mapping stats
 mkdir $BAMS/mappingstats/
-samtools flagstat $BAMS/${sample_name}_${run_name}.sam > $BAMS/mappingstats/${sample_name}_mapstats.txt
+samtools flagstat $BAMS/bwa_${sample_name}_${run_name}.sam > $BAMS/mappingstats/bwa_${sample_name}_${run_name}_mapstats.txt
+
+samtools flagstat $BAMS/mini_${sample_name}_${run_name}.sam > $BAMS/mappingstats/mini_${sample_name}_${run_name}_mapstats.txt
 
 # Convert sam to sorted bam and index bams with csi
-samtools view -b -T $INDEX $BAMS/${sample_name}_${run_name}.sam | samtools sort -@ 20 > $BAMS/${sample_name}_${run_name}.bam
-samtools index -c $BAMS/${sample_name}_${run_name}.bam
+samtools view -b -T $INDEX $BAMS/bwa_${sample_name}_${run_name}.sam | samtools sort -@ 20 > $BAMS/bwa_${sample_name}_${run_name}.bam
+samtools index -c $BAMS/bwa_${sample_name}_${run_name}.bam
+
+samtools view -b -T $INDEX $BAMS/mini_${sample_name}_${run_name}.sam | samtools sort -@ 20 > $BAMS/mini_${sample_name}_${run_name}.bam
+samtools index -c $BAMS/mini_${sample_name}_${run_name}.bam
