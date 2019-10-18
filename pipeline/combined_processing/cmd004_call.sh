@@ -11,6 +11,7 @@
 
 module load freebayes/1.2.0
 INDEX=/rhome/jmarz001/shared/GENOMES/BARLEY/2019_Release_Morex_vers2/Barley_Morex_V2_pseudomolecules.fasta
+PROJECT_DIR=/rhome/jmarz001/bigdata/CCXXIRAD/combined_CCXXI
 
 # Define location variables
 BAMS=$PROJECT_DIR/data/bams
