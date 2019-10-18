@@ -7,16 +7,15 @@
 #SBATCH --time=2:00:00
 #SBATCH --output=/rhome/jmarz001/bigdata/CCXXIRAD/combined_CCXXI/scripts/cmd002.5_CompareCoverage.stdout
 #SBATCH --job-name='coverage'
-#SBATCH --array=1-4
-#468%10
+#SBATCH --array=1-468%10
 
 # Define directories and file locations
 PROJECT_DIR=/rhome/jmarz001/bigdata/CCXXIRAD/combined_CCXXI
 
 # Define names of Jacob vs. Jill's files
-ls *fq.gz > JBL_CCXXI_filelist
-JBL_FILES=
-JM file directory > JM_CCXXI_filelist
+#ls *fq.gz > JBL_CCXXI_filelist
+#JBL_FILES=
+#JM file directory > JM_CCXXI_filelist
 # Quick reference: known files to compare
 # 267_6.fq.gz vs 267_61.fq.gz & 267_7 vs. 267_70
 
@@ -36,7 +35,7 @@ printf "$FQ_FILE \t $RAW_READ_COUNT \n" >> $PROJECT_DIR/args/raw_read_counts.txt
 ## Count the number of lines in each trimed fq.gz file to see what percent of reads passed trimming
 TRIM=$PROJECT_DIR/data/trimmed
 TRIMMED_FILES=$PROJECT_DIR/args/trimmed_files
-cd $TRIM ; ls *_trimmed.fq.gz > $$TRIMMED_FILES
+cd $TRIM ; ls *_trimmed.fq.gz > $TRIMMED_FILES
 TRIM_FILE=$(head -n $SLURM_ARRAY_TASK_ID $TRIMMED_FILES | tail -n 1)
 
 # Unzip files and count the number of reads with "^@"
@@ -52,5 +51,5 @@ cd $BAM ; ls *.sam > $BAM_FILES
 SAM_FILE=$(head -n $SLURM_ARRAY_TASK_ID $BAM_FILES | tail -n 1)
 
 # Unzip files and count the number of reads with "^@"
-SAM_READ_COUNT=$(zcat $SAM_FILE | grep -c "^J")
+SAM_READ_COUNT=$(grep -c "^J" $SAM_FILE)
 printf "$SAM_FILE \t $SAM_READ_COUNT \n" >> $PROJECT_DIR/args/sam_read_counts.txt
