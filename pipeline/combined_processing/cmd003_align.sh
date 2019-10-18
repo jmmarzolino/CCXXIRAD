@@ -15,7 +15,7 @@ PROJECT_DIR=/rhome/jmarz001/bigdata/CCXXIRAD/combined_CCXXI
 # Define location variables
 TRIMMED=$PROJECT_DIR/data/trimmed
 BAMS=$PROJECT_DIR/data/bams
-#mkdir $BAMS
+mkdir $BAMS
 
 SEQS=$PROJECT_DIR/args/trimmed_files
 cd $TRIMMED ; ls *trimmed.fq.gz >> $SEQS
@@ -50,7 +50,7 @@ else
 fi
 
 # Minimap2 mapping
-#minimap2 -t 10 -ax sr $MINDEX -R "@RG\tID:${sample_name}_${SLURM_ARRAY_TASK_ID}\tSM:${sample_name}\tPU:illumina\tLB:$RGLB" $TRIMMED/$FILE > $BAMS/${sample_name}.sam
+minimap2 -t 10 -ax sr $MINDEX -R "@RG\tID:${sample_name}_${SLURM_ARRAY_TASK_ID}\tSM:${sample_name}\tPU:illumina\tLB:$RGLB" $TRIMMED/$FILE > $BAMS/${sample_name}.sam
 
 # Get mapping stats
 mkdir $BAMS/mappingstats/
