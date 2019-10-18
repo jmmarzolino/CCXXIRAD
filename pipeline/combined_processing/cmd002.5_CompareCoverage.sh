@@ -54,5 +54,3 @@ SAM_FILE=$(head -n $SLURM_ARRAY_TASK_ID $BAM_FILES | tail -n 1)
 # Unzip files and count the number of reads with "^@"
 SAM_READ_COUNT=$(zcat $SAM_FILE | grep -c "^J")
 printf "$SAM_FILE \t $SAM_READ_COUNT \n" >> $PROJECT_DIR/args/sam_read_counts.txt
-
-#paste < (cut -f5 file) < (cut -f50 file) > outfile
