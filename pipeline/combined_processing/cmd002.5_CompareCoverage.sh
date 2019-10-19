@@ -46,9 +46,9 @@ printf "$TRIM_FILE \t $TRIM_READ_COUNT \n" >> $PROJECT_DIR/args/trim_read_counts
 ### LINES IN SAM FILES
 ## Count the number of lines in each sam file to see how many mapped
 BAM=$PROJECT_DIR/data/bams
-BAM_FILES=$PROJECT_DIR/args/bam_files
-cd $BAM ; ls *.sam > $BAM_FILES
-SAM_FILE=$(head -n $SLURM_ARRAY_TASK_ID $BAM_FILES | tail -n 1)
+SAM_FILES=$PROJECT_DIR/args/sam_files
+cd $BAM ; ls *.sam > $SAM_FILES
+SAM_FILE=$(head -n $SLURM_ARRAY_TASK_ID $SAM_FILES | tail -n 1)
 
 # Unzip files and count the number of reads with "^@"
 SAM_READ_COUNT=$(grep -c "^J" $SAM_FILE)
