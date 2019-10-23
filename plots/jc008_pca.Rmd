@@ -3,7 +3,7 @@
 JBL <- read.delim("/bigdata/koeniglab/jmarz001/CCXXIRAD/CCXXIRAD2/results/JBL.eigenvec")
 
 # replace KL numbers with generation numbers for plotting
-JBL$FID <- gsub("24", "F25", JBL$FID)
+JBL$FID <- gsub("24", "F29", JBL$FID)
 JBL$FID <- gsub("267", "F11", JBL$FID)
 
 # produce pca's colored by generation number
@@ -11,9 +11,12 @@ JBL$FID <- gsub("267", "F11", JBL$FID)
 ggplot(JBL, aes(PC1, PC2)) + geom_point(aes(color = JBL$FID)) + xlab("PC1") + theme_minimal() + ylab("PC2") + scale_color_manual("Generations", values=wes_palette("GrandBudapest1")) + theme(axis.text=element_text(size=12), axis.title=element_text(size=14,face="bold"))
 
 # actually using the MAF filtered and LD pruned data...
-> JBL_pca_MAF_LD <- read.delim("~/bigdata/CCXXIRAD/CCXXIRAD2/results/JBL_pca_MAF_LD.eigenvec")
->   View(JBL_pca_MAF_LD)
-> JBL_pca_MAF_LD$FID <- gsub("25", "24", JBL_pca_MAF_LD$FID)
-> JBL_pca_MAF_LD$FID <- gsub("24", "F25", JBL_pca_MAF_LD$FID)
-> JBL_pca_MAF_LD$FID <- gsub("267", "F11", JBL_pca_MAF_LD$FID)
-> ggplot(JBL_pca_MAF_LD, aes(PC1, PC2)) + geom_point(aes(color=JBL_pca_MAF_LD$FID)) + xlab("PC1") + theme_minimal() + ylab("PC2") + scale_color_manual("Generations", values=wes_palette("GrandBudapest1")) + theme(axis.text=element_text(size=12), axis.title=element_text(size=14,face="bold"))
+JBL_pca_MAF_LD <- read.delim("~/bigdata/CCXXIRAD/CCXXIRAD2/results/JBL_pca_MAF_LD.eigenvec")
+
+View(JBL_pca_MAF_LD)
+
+JBL_pca_MAF_LD$FID <- gsub("25", "24", JBL_pca_MAF_LD$FID)
+JBL_pca_MAF_LD$FID <- gsub("24", "F25", JBL_pca_MAF_LD$FID)
+JBL_pca_MAF_LD$FID <- gsub("267", "F11", JBL_pca_MAF_LD$FID)
+
+ggplot(JBL_pca_MAF_LD, aes(PC1, PC2)) + geom_point(aes(color=JBL_pca_MAF_LD$FID)) + xlab("PC1") + theme_minimal() + ylab("PC2") + scale_color_manual("Generations", values=wes_palette("GrandBudapest1")) + theme(axis.text=element_text(size=12), axis.title=element_text(size=14,face="bold"))

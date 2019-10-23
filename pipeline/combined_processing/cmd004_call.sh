@@ -19,7 +19,7 @@ SNPS=$PROJECT_DIR/data/calls
 mkdir $SNPS
 
 SEQS=$PROJECT_DIR/args/bam_files
-cd $BAMS ; ls *.bam >> $SEQS
+cd $BAMS ; ls *.bam > $SEQS
 
 # Define files to run over
 FILE=$(head -n $SLURM_ARRAY_TASK_ID $SEQS | tail -n 1)

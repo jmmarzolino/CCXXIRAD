@@ -33,7 +33,7 @@ combo_filt <- read.delim("/bigdata/koeniglab/jmarz001/CCXXIRAD/CCXXIRAD2/results
 > combo_filt[352:437,8] <- "JBL"
 
 # replace KL numbers with generation numbers for plotting
-combo_filt$FID <- gsub("25", "24", combo_filt$FID)
+combo_filt$FID <- gsub("25", "F29", combo_filt$FID)
 combo_filt$FID <- gsub("24", "F25", combo_filt$FID)
 combo_filt$FID <- gsub("267", "F11", combo_filt$FID)
 
