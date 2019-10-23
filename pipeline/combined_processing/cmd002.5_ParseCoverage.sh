@@ -7,7 +7,7 @@
 #SBATCH --time=2:00:00
 #SBATCH --output=/rhome/jmarz001/bigdata/CCXXIRAD/combined_CCXXI/scripts/cmd002.5_CompareCoverage.stdout
 #SBATCH --job-name='coverage'
-#SBATCH --array=1-468%10
+#SBATCH --array=1-468
 
 # Define directories and file locations
 PROJECT_DIR=/rhome/jmarz001/bigdata/CCXXIRAD/combined_CCXXI
@@ -43,13 +43,13 @@ TRIM_READ_COUNT=$(zcat $TRIM_FILE | grep -c "^@")
 printf "$TRIM_FILE \t $TRIM_READ_COUNT \n" >> $PROJECT_DIR/args/trim_read_counts.txt
 
 
-### LINES IN SAM FILES
-## Count the number of lines in each sam file to see how many mapped
-BAM=$PROJECT_DIR/data/bams
-SAM_FILES=$PROJECT_DIR/args/sam_files
-cd $BAM ; ls *.sam > $SAM_FILES
-SAM_FILE=$(head -n $SLURM_ARRAY_TASK_ID $SAM_FILES | tail -n 1)
+### LINES IN BAM FILES
+## Count the number of lines in each bam file to see how many mapped
+BAM_STATS=$PROJECT_DIR/data/bams/mappingstats
+BAM_STATS_FILES=$PROJECT_DIR/args/bam_stat_files
+cd $BAM_STATS ; ls *_mapstats.txt > $BAM_STATS_FILES
+STAT_FILE=$(head -n $SLURM_ARRAY_TASK_ID $BAM_STATS_FILES | tail -n 1)
+sample_name=$(basename "$STAT_FILE" | cut -d_ -f1-2)
 
-# Unzip files and count the number of reads with "^@"
-SAM_READ_COUNT=$(grep -c "^J" $SAM_FILE)
-printf "$SAM_FILE \t $SAM_READ_COUNT \n" >> $PROJECT_DIR/args/sam_read_counts.txt
+BAM_READ_COUNT=$(head -n5 $BAM_STATS/$STAT_FILE | tail -n1 | cut -d\  -f1)
+printf "$sample_name \t $BAM_READ_COUNT \n" >> $PROJECT_DIR/args/bam_read_counts.txt

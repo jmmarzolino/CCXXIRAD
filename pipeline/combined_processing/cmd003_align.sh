@@ -54,6 +54,9 @@ minimap2 -t 10 -ax sr $MINDEX -R "@RG\tID:${sample_name}_${SLURM_ARRAY_TASK_ID}\
 # Convert sam to sorted bam and index bams with csi
 samtools view -b -T $INDEX $BAMS/${sample_name}.sam | samtools sort -@ 20 > $BAMS/${sample_name}.bam
 samtools index -c $BAMS/${sample_name}.bam
+# Get mapping stats out of bams
+mkdir $BAMS/mappingstats/
+samtools flagstat $BAMS/${sample_name}.bam > $BAMS/mappingstats/${sample_name}_mapstats.txt
 
 # extract & export unmapped reads
 #samtools view -f4 -b $RESULTSDIR/"$SHORT".bam > $RESULTSDIR/"$SHORT".unmapped.bam
