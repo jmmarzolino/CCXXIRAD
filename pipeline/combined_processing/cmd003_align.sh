@@ -18,7 +18,7 @@ BAMS=$PROJECT_DIR/data/bams
 mkdir $BAMS
 
 SEQS=$PROJECT_DIR/args/trimmed_files
-cd $TRIMMED ; ls *trimmed.fq.gz >> $SEQS
+cd $TRIMMED ; ls *trimmed.fq.gz > $SEQS
 
 # Define files to run over
 FILE=$(head -n $SLURM_ARRAY_TASK_ID $SEQS | tail -n 1)
